@@ -173,6 +173,9 @@ export type Profile = {
   education: string[];
   skills: string[];
   years_experience: number | null;
+  cv_file_name: string | null;
+  cv_storage_path: string | null;
+  cv_updated_at: string | null;
 };
 
 /** Structured shape produced by the AI extraction pipeline. */

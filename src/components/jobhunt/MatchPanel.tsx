@@ -50,7 +50,7 @@ function Group({
       {items.length ? (
         <div className="flex flex-wrap gap-1">
           {items.map((item) => (
-            <Tag key={item} tone={tone}>
+            <Tag key={item} tone={tone} copyText={item}>
               {item}
             </Tag>
           ))}

@@ -639,7 +639,7 @@ function TagRow({ label, items }: { label: string; items: string[] }) {
       <h3 className="pixel-text pb-2 text-[8px] text-muted-foreground">{label}</h3>
       <div className="flex flex-wrap gap-1">
         {items.map((item) => (
-          <Tag key={item}>{item}</Tag>
+          <Tag key={item} copyText={item}>{item}</Tag>
         ))}
       </div>
     </div>
