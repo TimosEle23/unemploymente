@@ -13,6 +13,7 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as AddRouteImport } from './routes/add'
 import { Route as AnalyticsRouteImport } from './routes/analytics'
 import { Route as AuthRouteImport } from './routes/auth'
+import { Route as InboxImportRouteImport } from './routes/inbox-import'
 import { Route as InterviewsRouteImport } from './routes/interviews'
 import { Route as SettingsRouteImport } from './routes/settings'
 import { Route as ApplicationsIndexRouteImport } from './routes/applications/index'
@@ -38,6 +39,11 @@ const AnalyticsRoute = AnalyticsRouteImport.update({
 const AuthRoute = AuthRouteImport.update({
   id: '/auth',
   path: '/auth',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const InboxImportRoute = InboxImportRouteImport.update({
+  id: '/inbox-import',
+  path: '/inbox-import',
   getParentRoute: () => rootRouteImport,
 } as any)
 const InterviewsRoute = InterviewsRouteImport.update({
@@ -77,6 +83,7 @@ export interface FileRoutesByFullPath {
   '/add': typeof AddRoute
   '/analytics': typeof AnalyticsRoute
   '/auth': typeof AuthRoute
+  '/inbox-import': typeof InboxImportRoute
   '/interviews': typeof InterviewsRoute
   '/settings': typeof SettingsRoute
   '/applications/$id': typeof ApplicationsIdRoute
@@ -89,6 +96,7 @@ export interface FileRoutesByTo {
   '/add': typeof AddRoute
   '/analytics': typeof AnalyticsRoute
   '/auth': typeof AuthRoute
+  '/inbox-import': typeof InboxImportRoute
   '/interviews': typeof InterviewsRoute
   '/settings': typeof SettingsRoute
   '/applications/$id': typeof ApplicationsIdRoute
@@ -102,6 +110,7 @@ export interface FileRoutesById {
   '/add': typeof AddRoute
   '/analytics': typeof AnalyticsRoute
   '/auth': typeof AuthRoute
+  '/inbox-import': typeof InboxImportRoute
   '/interviews': typeof InterviewsRoute
   '/settings': typeof SettingsRoute
   '/applications/$id': typeof ApplicationsIdRoute
@@ -116,6 +125,7 @@ export interface FileRouteTypes {
     | '/add'
     | '/analytics'
     | '/auth'
+    | '/inbox-import'
     | '/interviews'
     | '/settings'
     | '/applications/$id'
@@ -128,6 +138,7 @@ export interface FileRouteTypes {
     | '/add'
     | '/analytics'
     | '/auth'
+    | '/inbox-import'
     | '/interviews'
     | '/settings'
     | '/applications/$id'
@@ -140,6 +151,7 @@ export interface FileRouteTypes {
     | '/add'
     | '/analytics'
     | '/auth'
+    | '/inbox-import'
     | '/interviews'
     | '/settings'
     | '/applications/$id'
@@ -153,6 +165,7 @@ export interface RootRouteChildren {
   AddRoute: typeof AddRoute
   AnalyticsRoute: typeof AnalyticsRoute
   AuthRoute: typeof AuthRoute
+  InboxImportRoute: typeof InboxImportRoute
   InterviewsRoute: typeof InterviewsRoute
   SettingsRoute: typeof SettingsRoute
   ApplicationsIdRoute: typeof ApplicationsIdRoute
@@ -189,6 +202,13 @@ declare module '@tanstack/react-router' {
       path: '/auth'
       fullPath: '/auth'
       preLoaderRoute: typeof AuthRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/inbox-import': {
+      id: '/inbox-import'
+      path: '/inbox-import'
+      fullPath: '/inbox-import'
+      preLoaderRoute: typeof InboxImportRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/interviews': {
@@ -241,6 +261,7 @@ const rootRouteChildren: RootRouteChildren = {
   AddRoute: AddRoute,
   AnalyticsRoute: AnalyticsRoute,
   AuthRoute: AuthRoute,
+  InboxImportRoute: InboxImportRoute,
   InterviewsRoute: InterviewsRoute,
   SettingsRoute: SettingsRoute,
   ApplicationsIdRoute: ApplicationsIdRoute,
