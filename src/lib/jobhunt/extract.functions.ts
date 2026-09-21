@@ -194,13 +194,13 @@ export const extractJobFromScreenshots = createServerFn({ method: "POST" })
         : [];
     const cleanNumber = (value: unknown) => (typeof value === "number" && isFinite(value) ? value : null);
 
-    const result: Record<string, unknown> = {};
+    const result: Record<string, string | number | string[] | null> = {};
     for (const field of STRING_FIELDS) result[field] = cleanString(parsed[field]);
     for (const field of ARRAY_FIELDS) result[field] = cleanArray(parsed[field]);
     result["salary_min"] = cleanNumber(parsed["salary_min"]);
     result["salary_max"] = cleanNumber(parsed["salary_max"]);
 
-    const missingFields = [...STRING_FIELDS, ...ARRAY_FIELDS].filter((field) => {
+    const missingFields: string[] = [...STRING_FIELDS, ...ARRAY_FIELDS].filter((field) => {
       const value = result[field];
       return value === null || (Array.isArray(value) && value.length === 0);
     });
