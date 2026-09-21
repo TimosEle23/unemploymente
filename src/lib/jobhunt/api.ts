@@ -94,6 +94,47 @@ export async function updateProfile(userId: string, patch: Partial<Profile>) {
   if (error) throw error;
 }
 
+const CV_BUCKET = "profile-cvs";
+
+export async function uploadLatestCv(userId: string, file: File, previousPath?: string | null) {
+  const extension = file.name.split(".").pop()?.toLowerCase() ?? "pdf";
+  const path = `${userId}/latest-cv.${extension}`;
+  if (previousPath && previousPath !== path) {
+    await supabase.storage.from(CV_BUCKET).remove([previousPath]);
+  }
+  const { error } = await supabase.storage.from(CV_BUCKET).upload(path, file, {
+    contentType: file.type,
+    upsert: true,
+  });
+  if (error) throw error;
+  await updateProfile(userId, {
+    cv_file_name: file.name,
+    cv_storage_path: path,
+    cv_updated_at: new Date().toISOString(),
+  });
+}
+
+export async function downloadLatestCv(path: string, fileName: string) {
+  const { data, error } = await supabase.storage.from(CV_BUCKET).download(path);
+  if (error) throw error;
+  const url = URL.createObjectURL(data);
+  const anchor = document.createElement("a");
+  anchor.href = url;
+  anchor.download = fileName;
+  anchor.click();
+  URL.revokeObjectURL(url);
+}
+
+export async function removeLatestCv(userId: string, path: string) {
+  const { error } = await supabase.storage.from(CV_BUCKET).remove([path]);
+  if (error) throw error;
+  await updateProfile(userId, {
+    cv_file_name: null,
+    cv_storage_path: null,
+    cv_updated_at: null,
+  });
+}
+
 export async function createApplication(
   userId: string,
   values: Partial<Application> & { job_title: string; company: string },

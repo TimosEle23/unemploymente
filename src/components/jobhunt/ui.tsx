@@ -1,4 +1,6 @@
 import { forwardRef, type ButtonHTMLAttributes, type ReactNode } from "react";
+import { Copy } from "lucide-react";
+import { toast } from "sonner";
 import { cn } from "@/lib/utils";
 import { STATUS_LABEL, STATUS_TONE, type Status, type StatusTone } from "@/lib/jobhunt/types";
 
@@ -114,17 +116,45 @@ export function Field({
 export const inputClass =
   "w-full border border-input bg-background px-2 py-1.5 font-mono text-[13px] text-foreground outline-none focus:border-foreground placeholder:text-muted-foreground";
 
-export function Tag({ children, tone = "neutral" }: { children: ReactNode; tone?: StatusTone }) {
+export function Tag({
+  children,
+  tone = "neutral",
+  copyText,
+}: {
+  children: ReactNode;
+  tone?: StatusTone;
+  copyText?: string;
+}) {
+  const classes = cn(
+    "inline-flex min-w-0 items-center gap-1 border px-1.5 py-0.5 font-mono text-[11px] break-words",
+    tone === "ok" && "border-ok text-ok",
+    tone === "bad" && "border-bad text-bad",
+    tone === "neutral" && "border-border text-muted-foreground",
+    tone === "fresh" && "border-foreground text-foreground",
+  );
+  if (copyText) {
+    return (
+      <button
+        type="button"
+        className={cn(classes, "cursor-copy hover:bg-accent hover:text-foreground focus:outline-none focus:border-foreground")}
+        title={`Copy ${copyText}`}
+        aria-label={`Copy ${copyText}`}
+        onClick={async () => {
+          try {
+            await navigator.clipboard.writeText(copyText);
+            toast.success(`${copyText} copied`);
+          } catch {
+            toast.error("Could not copy skill");
+          }
+        }}
+      >
+        <span>{children}</span>
+        <Copy className="h-3 w-3 shrink-0" aria-hidden="true" />
+      </button>
+    );
+  }
   return (
-    <span
-      className={cn(
-        "inline-block border px-1.5 py-0.5 font-mono text-[11px]",
-        tone === "ok" && "border-ok text-ok",
-        tone === "bad" && "border-bad text-bad",
-        tone === "neutral" && "border-border text-muted-foreground",
-        tone === "fresh" && "border-foreground text-foreground",
-      )}
-    >
+    <span className={classes}>
       {children}
     </span>
   );

@@ -322,6 +322,9 @@ export type Database = {
       profiles: {
         Row: {
           created_at: string
+          cv_file_name: string | null
+          cv_storage_path: string | null
+          cv_updated_at: string | null
           education: string[]
           email: string | null
           full_name: string | null
@@ -333,6 +336,9 @@ export type Database = {
         }
         Insert: {
           created_at?: string
+          cv_file_name?: string | null
+          cv_storage_path?: string | null
+          cv_updated_at?: string | null
           education?: string[]
           email?: string | null
           full_name?: string | null
@@ -344,6 +350,9 @@ export type Database = {
         }
         Update: {
           created_at?: string
+          cv_file_name?: string | null
+          cv_storage_path?: string | null
+          cv_updated_at?: string | null
           education?: string[]
           email?: string | null
           full_name?: string | null
