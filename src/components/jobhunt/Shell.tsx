@@ -124,8 +124,13 @@ export function Shell({ children }: { children: ReactNode }) {
                       ) : null}
                     </RetroButton>
                   </PopoverTrigger>
-                  <PopoverContent align="end" className="w-[calc(100vw-2rem)] max-w-md rounded-none border-border bg-background p-0 shadow-none hard-shadow">
-                    <div className="flex items-center justify-between gap-3 border-b border-border px-3 py-3">
+                  <PopoverContent
+                    align="end"
+                    sideOffset={10}
+                    collisionPadding={16}
+                    className="w-[calc(100vw-2rem)] max-w-md rounded-none border-border bg-panel p-0 shadow-none hard-shadow"
+                  >
+                    <div className="flex flex-wrap items-center justify-between gap-2 border-b border-border px-3 py-3">
                       <h2 className="pixel-text text-[10px] text-ok">NOTIFICATIONS</h2>
                       <RetroButton variant="ghost" size="sm" onClick={markAllRead}>MARK ALL READ</RetroButton>
                     </div>
@@ -148,7 +153,7 @@ export function Shell({ children }: { children: ReactNode }) {
                         })}
                       </ul>
                     ) : (
-                      <p className="p-5 font-mono text-[12px] text-muted-foreground">No actions due in the next seven days.</p>
+                      <p className="break-words p-5 font-mono text-[12px] leading-5 text-muted-foreground">No actions due in the next seven days.</p>
                     )}
                   </PopoverContent>
                 </Popover>
