@@ -184,7 +184,27 @@ async function gmailMessages(connectionKey: string, days: number): Promise<MailI
   const query = encodeURIComponent(`newer_than:${days}d (application OR interview OR recruiter OR position OR role OR offer OR rejected OR "thank you for applying")`);
   const listed = await callAsAppUser({ connectionAPIKey: connectionKey, connectorId: GMAIL, requiredScopes: GOOGLE_SCOPES, path: `/gmail/v1/users/me/messages?maxResults=20&q=${query}` });
   if (await reconnectRequired(listed)) throw new Error("RECONNECT_REQUIRED");
-  if (!listed.ok) throw new Error(`Gmail search failed (${listed.status}).`);
+  if (!listed.ok) {
+    const errorText = await listed.text();
+    let providerMessage = "Gmail could not complete the search.";
+    try {
+      const errorBody = JSON.parse(errorText) as {
+        error?: { message?: unknown; status?: unknown; errors?: { reason?: unknown }[] };
+        message?: unknown;
+      };
+      const message = typeof errorBody.error?.message === "string"
+        ? errorBody.error.message
+        : typeof errorBody.message === "string" ? errorBody.message : null;
+      if (message) providerMessage = message;
+      const reason = errorBody.error?.errors?.find((item) => typeof item.reason === "string")?.reason;
+      if (listed.status === 403 && (reason === "insufficientPermissions" || /insufficient.*scope|permission/i.test(providerMessage))) {
+        throw new Error("RECONNECT_REQUIRED");
+      }
+    } catch (error) {
+      if (error instanceof Error && error.message === "RECONNECT_REQUIRED") throw error;
+    }
+    throw new Error(`Gmail search failed: ${providerMessage}`);
+  }
   const listBody = await listed.json() as { messages?: { id: string }[] };
   const items: MailItem[] = [];
   for (const message of (listBody.messages ?? []).slice(0, 12)) {
