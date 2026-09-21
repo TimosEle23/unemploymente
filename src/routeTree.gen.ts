@@ -17,6 +17,8 @@ import { Route as InterviewsRouteImport } from './routes/interviews'
 import { Route as SettingsRouteImport } from './routes/settings'
 import { Route as ApplicationsIndexRouteImport } from './routes/applications/index'
 import { Route as ApplicationsIdRouteImport } from './routes/applications/$id'
+import { Route as OauthGoogle_mailReturnRouteImport } from './routes/oauth/google_mail/return'
+import { Route as OauthMicrosoft_outlookReturnRouteImport } from './routes/oauth/microsoft_outlook/return'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -58,6 +60,17 @@ const ApplicationsIdRoute = ApplicationsIdRouteImport.update({
   path: '/applications/$id',
   getParentRoute: () => rootRouteImport,
 } as any)
+const OauthGoogle_mailReturnRoute = OauthGoogle_mailReturnRouteImport.update({
+  id: '/oauth/google_mail/return',
+  path: '/oauth/google_mail/return',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const OauthMicrosoft_outlookReturnRoute =
+  OauthMicrosoft_outlookReturnRouteImport.update({
+    id: '/oauth/microsoft_outlook/return',
+    path: '/oauth/microsoft_outlook/return',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -68,6 +81,8 @@ export interface FileRoutesByFullPath {
   '/settings': typeof SettingsRoute
   '/applications/$id': typeof ApplicationsIdRoute
   '/applications/': typeof ApplicationsIndexRoute
+  '/oauth/google_mail/return': typeof OauthGoogle_mailReturnRoute
+  '/oauth/microsoft_outlook/return': typeof OauthMicrosoft_outlookReturnRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -78,6 +93,8 @@ export interface FileRoutesByTo {
   '/settings': typeof SettingsRoute
   '/applications/$id': typeof ApplicationsIdRoute
   '/applications': typeof ApplicationsIndexRoute
+  '/oauth/google_mail/return': typeof OauthGoogle_mailReturnRoute
+  '/oauth/microsoft_outlook/return': typeof OauthMicrosoft_outlookReturnRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -89,6 +106,8 @@ export interface FileRoutesById {
   '/settings': typeof SettingsRoute
   '/applications/$id': typeof ApplicationsIdRoute
   '/applications/': typeof ApplicationsIndexRoute
+  '/oauth/google_mail/return': typeof OauthGoogle_mailReturnRoute
+  '/oauth/microsoft_outlook/return': typeof OauthMicrosoft_outlookReturnRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -101,6 +120,8 @@ export interface FileRouteTypes {
     | '/settings'
     | '/applications/$id'
     | '/applications/'
+    | '/oauth/google_mail/return'
+    | '/oauth/microsoft_outlook/return'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -111,6 +132,8 @@ export interface FileRouteTypes {
     | '/settings'
     | '/applications/$id'
     | '/applications'
+    | '/oauth/google_mail/return'
+    | '/oauth/microsoft_outlook/return'
   id:
     | '__root__'
     | '/'
@@ -121,6 +144,8 @@ export interface FileRouteTypes {
     | '/settings'
     | '/applications/$id'
     | '/applications/'
+    | '/oauth/google_mail/return'
+    | '/oauth/microsoft_outlook/return'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -132,6 +157,8 @@ export interface RootRouteChildren {
   SettingsRoute: typeof SettingsRoute
   ApplicationsIdRoute: typeof ApplicationsIdRoute
   ApplicationsIndexRoute: typeof ApplicationsIndexRoute
+  OauthGoogle_mailReturnRoute: typeof OauthGoogle_mailReturnRoute
+  OauthMicrosoft_outlookReturnRoute: typeof OauthMicrosoft_outlookReturnRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -192,6 +219,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApplicationsIdRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/oauth/google_mail/return': {
+      id: '/oauth/google_mail/return'
+      path: '/oauth/google_mail/return'
+      fullPath: '/oauth/google_mail/return'
+      preLoaderRoute: typeof OauthGoogle_mailReturnRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/oauth/microsoft_outlook/return': {
+      id: '/oauth/microsoft_outlook/return'
+      path: '/oauth/microsoft_outlook/return'
+      fullPath: '/oauth/microsoft_outlook/return'
+      preLoaderRoute: typeof OauthMicrosoft_outlookReturnRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -204,6 +245,8 @@ const rootRouteChildren: RootRouteChildren = {
   SettingsRoute: SettingsRoute,
   ApplicationsIdRoute: ApplicationsIdRoute,
   ApplicationsIndexRoute: ApplicationsIndexRoute,
+  OauthGoogle_mailReturnRoute: OauthGoogle_mailReturnRoute,
+  OauthMicrosoft_outlookReturnRoute: OauthMicrosoft_outlookReturnRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
