@@ -250,8 +250,8 @@ function SettingsPage() {
         </Panel>
 
         <Panel title="CHANGE PASSWORD">
-          {user?.app_metadata.provider !== "email" && !user?.identities?.some((identity) => identity.provider === "email") ? (
-            <p className="font-sans text-[13px] text-muted-foreground">This account signs in with {user?.app_metadata.provider ?? "a connected provider"}. Manage its password there.</p>
+          {user?.app_metadata?.provider !== "email" && !user?.identities?.some((identity) => identity.provider === "email") ? (
+            <p className="font-sans text-[13px] text-muted-foreground">This account signs in with {user?.app_metadata?.provider ?? "a connected provider"}. Manage its password there.</p>
           ) : (
             <div className="grid gap-3 sm:grid-cols-3">
               <Field label="CURRENT PASSWORD"><input className={inputClass} type="password" autoComplete="current-password" value={currentPassword} onChange={(event) => setCurrentPassword(event.target.value)} /></Field>
