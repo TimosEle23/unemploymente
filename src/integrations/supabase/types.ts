@@ -14,6 +14,36 @@ export type Database = {
   }
   public: {
     Tables: {
+      app_user_connections: {
+        Row: {
+          connection_key_ciphertext: string
+          connector_id: string
+          created_at: string
+          id: string
+          reconnect_required: boolean
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          connection_key_ciphertext: string
+          connector_id: string
+          created_at?: string
+          id?: string
+          reconnect_required?: boolean
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          connection_key_ciphertext?: string
+          connector_id?: string
+          created_at?: string
+          id?: string
+          reconnect_required?: boolean
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       application_events: {
         Row: {
           application_id: string
@@ -231,6 +261,71 @@ export type Database = {
           {
             foreignKeyName: "contacts_application_id_fkey"
             columns: ["application_id"]
+            isOneToOne: false
+            referencedRelation: "applications"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      email_import_drafts: {
+        Row: {
+          connector_id: string
+          created_at: string
+          duplicate_application_id: string | null
+          enrichment_status: string
+          extracted_job: Json
+          id: string
+          message_subject: string | null
+          missing_fields: string[]
+          provider_message_id: string
+          received_at: string | null
+          review_status: string
+          sender_email: string | null
+          sender_name: string | null
+          source_url: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          connector_id: string
+          created_at?: string
+          duplicate_application_id?: string | null
+          enrichment_status?: string
+          extracted_job?: Json
+          id?: string
+          message_subject?: string | null
+          missing_fields?: string[]
+          provider_message_id: string
+          received_at?: string | null
+          review_status?: string
+          sender_email?: string | null
+          sender_name?: string | null
+          source_url?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          connector_id?: string
+          created_at?: string
+          duplicate_application_id?: string | null
+          enrichment_status?: string
+          extracted_job?: Json
+          id?: string
+          message_subject?: string | null
+          missing_fields?: string[]
+          provider_message_id?: string
+          received_at?: string | null
+          review_status?: string
+          sender_email?: string | null
+          sender_name?: string | null
+          source_url?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "email_import_drafts_duplicate_application_id_fkey"
+            columns: ["duplicate_application_id"]
             isOneToOne: false
             referencedRelation: "applications"
             referencedColumns: ["id"]
