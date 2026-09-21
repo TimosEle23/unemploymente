@@ -14,7 +14,426 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      application_events: {
+        Row: {
+          application_id: string
+          created_at: string
+          event_date: string
+          event_type: string
+          id: string
+          notes: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          application_id: string
+          created_at?: string
+          event_date?: string
+          event_type: string
+          id?: string
+          notes?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          application_id?: string
+          created_at?: string
+          event_date?: string
+          event_type?: string
+          id?: string
+          notes?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "application_events_application_id_fkey"
+            columns: ["application_id"]
+            isOneToOne: false
+            referencedRelation: "applications"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      applications: {
+        Row: {
+          application_deadline: string | null
+          applied_at: string | null
+          benefits: string[]
+          cloud_technologies: string[]
+          company: string
+          contact_info: string | null
+          created_at: string
+          currency: string | null
+          description: string | null
+          education_requirements: string | null
+          employment_type: string | null
+          extra_info: string | null
+          extraction_source: string | null
+          frameworks: string[]
+          id: string
+          is_seed: boolean
+          job_board: string | null
+          job_title: string
+          job_url: string | null
+          location: string | null
+          ml_technologies: string[]
+          next_action: string | null
+          next_action_date: string | null
+          notes: string | null
+          posted_date: string | null
+          preferred_skills: string[]
+          programming_languages: string[]
+          qualifications: string[]
+          recruiter_contact: string | null
+          recruiter_name: string | null
+          required_experience: string | null
+          required_skills: string[]
+          requirements: string[]
+          responsibilities: string[]
+          salary_max: number | null
+          salary_min: number | null
+          salary_text: string | null
+          status: string
+          updated_at: string
+          user_id: string
+          work_arrangement: string | null
+        }
+        Insert: {
+          application_deadline?: string | null
+          applied_at?: string | null
+          benefits?: string[]
+          cloud_technologies?: string[]
+          company: string
+          contact_info?: string | null
+          created_at?: string
+          currency?: string | null
+          description?: string | null
+          education_requirements?: string | null
+          employment_type?: string | null
+          extra_info?: string | null
+          extraction_source?: string | null
+          frameworks?: string[]
+          id?: string
+          is_seed?: boolean
+          job_board?: string | null
+          job_title: string
+          job_url?: string | null
+          location?: string | null
+          ml_technologies?: string[]
+          next_action?: string | null
+          next_action_date?: string | null
+          notes?: string | null
+          posted_date?: string | null
+          preferred_skills?: string[]
+          programming_languages?: string[]
+          qualifications?: string[]
+          recruiter_contact?: string | null
+          recruiter_name?: string | null
+          required_experience?: string | null
+          required_skills?: string[]
+          requirements?: string[]
+          responsibilities?: string[]
+          salary_max?: number | null
+          salary_min?: number | null
+          salary_text?: string | null
+          status?: string
+          updated_at?: string
+          user_id: string
+          work_arrangement?: string | null
+        }
+        Update: {
+          application_deadline?: string | null
+          applied_at?: string | null
+          benefits?: string[]
+          cloud_technologies?: string[]
+          company?: string
+          contact_info?: string | null
+          created_at?: string
+          currency?: string | null
+          description?: string | null
+          education_requirements?: string | null
+          employment_type?: string | null
+          extra_info?: string | null
+          extraction_source?: string | null
+          frameworks?: string[]
+          id?: string
+          is_seed?: boolean
+          job_board?: string | null
+          job_title?: string
+          job_url?: string | null
+          location?: string | null
+          ml_technologies?: string[]
+          next_action?: string | null
+          next_action_date?: string | null
+          notes?: string | null
+          posted_date?: string | null
+          preferred_skills?: string[]
+          programming_languages?: string[]
+          qualifications?: string[]
+          recruiter_contact?: string | null
+          recruiter_name?: string | null
+          required_experience?: string | null
+          required_skills?: string[]
+          requirements?: string[]
+          responsibilities?: string[]
+          salary_max?: number | null
+          salary_min?: number | null
+          salary_text?: string | null
+          status?: string
+          updated_at?: string
+          user_id?: string
+          work_arrangement?: string | null
+        }
+        Relationships: []
+      }
+      contacts: {
+        Row: {
+          application_id: string | null
+          created_at: string
+          email: string | null
+          id: string
+          linkedin: string | null
+          name: string
+          notes: string | null
+          phone: string | null
+          role: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          application_id?: string | null
+          created_at?: string
+          email?: string | null
+          id?: string
+          linkedin?: string | null
+          name: string
+          notes?: string | null
+          phone?: string | null
+          role?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          application_id?: string | null
+          created_at?: string
+          email?: string | null
+          id?: string
+          linkedin?: string | null
+          name?: string
+          notes?: string | null
+          phone?: string | null
+          role?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "contacts_application_id_fkey"
+            columns: ["application_id"]
+            isOneToOne: false
+            referencedRelation: "applications"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      followups: {
+        Row: {
+          action: string
+          application_id: string
+          created_at: string
+          done: boolean
+          due_date: string | null
+          id: string
+          notes: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          action: string
+          application_id: string
+          created_at?: string
+          done?: boolean
+          due_date?: string | null
+          id?: string
+          notes?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          action?: string
+          application_id?: string
+          created_at?: string
+          done?: boolean
+          due_date?: string | null
+          id?: string
+          notes?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "followups_application_id_fkey"
+            columns: ["application_id"]
+            isOneToOne: false
+            referencedRelation: "applications"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      notes: {
+        Row: {
+          application_id: string
+          category: string
+          content: string
+          created_at: string
+          id: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          application_id: string
+          category?: string
+          content: string
+          created_at?: string
+          id?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          application_id?: string
+          category?: string
+          content?: string
+          created_at?: string
+          id?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "notes_application_id_fkey"
+            columns: ["application_id"]
+            isOneToOne: false
+            referencedRelation: "applications"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      profiles: {
+        Row: {
+          created_at: string
+          education: string[]
+          email: string | null
+          full_name: string | null
+          headline: string | null
+          id: string
+          skills: string[]
+          updated_at: string
+          years_experience: number | null
+        }
+        Insert: {
+          created_at?: string
+          education?: string[]
+          email?: string | null
+          full_name?: string | null
+          headline?: string | null
+          id: string
+          skills?: string[]
+          updated_at?: string
+          years_experience?: number | null
+        }
+        Update: {
+          created_at?: string
+          education?: string[]
+          email?: string | null
+          full_name?: string | null
+          headline?: string | null
+          id?: string
+          skills?: string[]
+          updated_at?: string
+          years_experience?: number | null
+        }
+        Relationships: []
+      }
+      screenshots: {
+        Row: {
+          application_id: string | null
+          created_at: string
+          file_name: string | null
+          id: string
+          ocr_text: string | null
+          storage_path: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          application_id?: string | null
+          created_at?: string
+          file_name?: string | null
+          id?: string
+          ocr_text?: string | null
+          storage_path: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          application_id?: string | null
+          created_at?: string
+          file_name?: string | null
+          id?: string
+          ocr_text?: string | null
+          storage_path?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "screenshots_application_id_fkey"
+            columns: ["application_id"]
+            isOneToOne: false
+            referencedRelation: "applications"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      skills: {
+        Row: {
+          application_id: string
+          created_at: string
+          id: string
+          kind: string
+          name: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          application_id: string
+          created_at?: string
+          id?: string
+          kind?: string
+          name: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          application_id?: string
+          created_at?: string
+          id?: string
+          kind?: string
+          name?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "skills_application_id_fkey"
+            columns: ["application_id"]
+            isOneToOne: false
+            referencedRelation: "applications"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       [_ in never]: never
