@@ -1,8 +1,10 @@
 import { useState, type ReactNode } from "react";
 import { Link, useNavigate, useRouterState } from "@tanstack/react-router";
 import { Menu, Plus, LogOut } from "lucide-react";
+import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/auth";
+import inviteFriendsIcon from "@/assets/invite-friends.png.asset.json";
 import { RetroButton } from "./ui";
 import { cn } from "@/lib/utils";
 
@@ -21,6 +23,30 @@ export function Shell({ children }: { children: ReactNode }) {
   const { user, loading } = useAuth();
   const path = useRouterState({ select: (state) => state.location.pathname });
 
+  async function shareJobhunt() {
+    const shareData = {
+      title: "JOBHUNT",
+      text: "Track AI and ML job applications with JOBHUNT.",
+      url: window.location.origin,
+    };
+
+    if (navigator.share) {
+      try {
+        await navigator.share(shareData);
+        return;
+      } catch (error) {
+        if (error instanceof DOMException && error.name === "AbortError") return;
+      }
+    }
+
+    try {
+      await navigator.clipboard.writeText(shareData.url);
+      toast.success("Invite link copied");
+    } catch {
+      toast.error("Could not copy the invite link");
+    }
+  }
+
   return (
     <div className="min-h-screen bg-background">
       <header className="border-b-2 border-border bg-panel">
@@ -32,6 +58,22 @@ export function Shell({ children }: { children: ReactNode }) {
             </p>
           </Link>
           <div className="flex items-center gap-2">
+            <RetroButton
+              variant="ok"
+              size="sm"
+              onClick={shareJobhunt}
+              aria-label="Invite friends"
+              title="Invite friends"
+              className="gap-1.5"
+            >
+              <img
+                src={inviteFriendsIcon.url}
+                alt=""
+                aria-hidden="true"
+                className="h-5 w-5 object-contain"
+              />
+              <span className="hidden sm:inline">INVITE FRIENDS</span>
+            </RetroButton>
             <RetroButton variant="primary" onClick={() => navigate({ to: "/add" })}>
               <Plus className="h-3 w-3" /> ADD JOB
             </RetroButton>

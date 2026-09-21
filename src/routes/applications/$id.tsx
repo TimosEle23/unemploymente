@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { Check, Pencil, X } from "lucide-react";
 import { toast } from "sonner";
 import { Shell } from "@/components/jobhunt/Shell";
 import { MatchPanel } from "@/components/jobhunt/MatchPanel";
@@ -101,6 +102,12 @@ function ApplicationDetail() {
   });
   const [noteDraft, setNoteDraft] = useState({ category: "GENERAL", content: "" });
   const [followDraft, setFollowDraft] = useState({ action: NEXT_ACTIONS[0] as string, due_date: "" });
+  const [editingTitle, setEditingTitle] = useState(false);
+  const [jobTitle, setJobTitle] = useState("");
+
+  useEffect(() => {
+    if (!editingTitle && app?.job_title) setJobTitle(app.job_title);
+  }, [app?.job_title, editingTitle]);
 
   const refresh = () =>
     Promise.all([
@@ -143,8 +150,74 @@ function ApplicationDetail() {
           <StatusBar status={app.status} />
           <div className="space-y-3 p-4">
             <div className="flex flex-wrap items-start justify-between gap-3">
-              <div>
-                <h1 className="pixel-text text-[14px] leading-6 text-foreground">{app.job_title}</h1>
+              <div className="min-w-0 flex-1">
+                {editingTitle ? (
+                  <div className="flex max-w-2xl items-stretch gap-2">
+                    <input
+                      className={`${inputClass} min-w-0 pixel-text text-[12px]`}
+                      value={jobTitle}
+                      autoFocus
+                      aria-label="Job name"
+                      onChange={(event) => setJobTitle(event.target.value)}
+                      onKeyDown={async (event) => {
+                        if (event.key === "Escape") {
+                          setJobTitle(app.job_title);
+                          setEditingTitle(false);
+                        }
+                        if (event.key === "Enter" && jobTitle.trim()) {
+                          await updateApplication(app.id, { job_title: jobTitle.trim() });
+                          await refresh();
+                          setEditingTitle(false);
+                          toast.success("Job name updated");
+                        }
+                      }}
+                    />
+                    <RetroButton
+                      variant="ok"
+                      size="sm"
+                      aria-label="Save job name"
+                      title="Save job name"
+                      disabled={!jobTitle.trim()}
+                      onClick={async () => {
+                        if (!jobTitle.trim()) return;
+                        await updateApplication(app.id, { job_title: jobTitle.trim() });
+                        await refresh();
+                        setEditingTitle(false);
+                        toast.success("Job name updated");
+                      }}
+                    >
+                      <Check className="h-3 w-3" />
+                    </RetroButton>
+                    <RetroButton
+                      variant="ghost"
+                      size="sm"
+                      aria-label="Cancel editing job name"
+                      title="Cancel"
+                      onClick={() => {
+                        setJobTitle(app.job_title);
+                        setEditingTitle(false);
+                      }}
+                    >
+                      <X className="h-3 w-3" />
+                    </RetroButton>
+                  </div>
+                ) : (
+                  <div className="flex items-start gap-2">
+                    <h1 className="min-w-0 break-words pixel-text text-[14px] leading-6 text-foreground">
+                      {app.job_title}
+                    </h1>
+                    <RetroButton
+                      variant="ghost"
+                      size="sm"
+                      aria-label="Edit job name"
+                      title="Edit job name"
+                      className="shrink-0"
+                      onClick={() => setEditingTitle(true)}
+                    >
+                      <Pencil className="h-3 w-3" />
+                    </RetroButton>
+                  </div>
+                )}
                 <p className="pt-2 font-mono text-[14px] text-foreground">{app.company}</p>
                 <p className="font-mono text-[12px] text-muted-foreground">
                   {[app.location, app.work_arrangement, app.employment_type].filter(Boolean).join(" · ")}
