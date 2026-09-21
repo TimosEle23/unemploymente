@@ -3,6 +3,7 @@ import type {
   Application,
   ApplicationEvent,
   Followup,
+  EmailImportDraft,
   Note,
   Profile,
   Screenshot,
@@ -280,4 +281,27 @@ export function findDuplicates(
     const sameTitle = !!title && app.job_title.trim().toLowerCase() === title;
     return sameUrl || (sameCompany && sameTitle);
   });
+}
+
+export async function fetchEmailImportDrafts(): Promise<EmailImportDraft[]> {
+  const { data, error } = await supabase
+    .from("email_import_drafts")
+    .select("*")
+    .eq("review_status", "PENDING")
+    .order("received_at", { ascending: false });
+  if (error) throw error;
+  return (data ?? []) as unknown as EmailImportDraft[];
+}
+
+export async function dismissEmailImportDraft(id: string) {
+  const { error } = await supabase.from("email_import_drafts").update({ review_status: "DISMISSED" }).eq("id", id);
+  if (error) throw error;
+}
+
+export async function markEmailImportDraftSaved(id: string, applicationId: string) {
+  const { error } = await supabase
+    .from("email_import_drafts")
+    .update({ review_status: "SAVED", duplicate_application_id: applicationId })
+    .eq("id", id);
+  if (error) throw error;
 }
