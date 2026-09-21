@@ -9,7 +9,7 @@ import { ReviewForm, type Draft } from "@/components/jobhunt/ReviewForm";
 import { EmptyState, Field, Panel, RetroButton, Tag, inputClass } from "@/components/jobhunt/ui";
 import { useAuth } from "@/lib/auth";
 import { useApplications } from "@/lib/jobhunt/hooks";
-import { createApplication, dismissEmailImportDraft, fetchEmailImportDrafts, findDuplicates, markEmailImportDraftSaved } from "@/lib/jobhunt/api";
+import { addEvent, createApplication, dismissEmailImportDraft, fetchEmailImportDrafts, findDuplicates, markEmailImportDraftSaved } from "@/lib/jobhunt/api";
 import { completeInboxConnection, disconnectInbox, getInboxConnectionStatus, scanJobEmails, startInboxConnection } from "@/lib/jobhunt/inbox.functions";
 import { emptyExtraction, type EmailImportDraft } from "@/lib/jobhunt/types";
 
@@ -161,6 +161,11 @@ function InboxImportPage() {
         job_title: editing.draft.job_title.trim(),
         company: editing.draft.company.trim(),
         extraction_source: `EMAIL_${editing.item.connector_id.toUpperCase()}`,
+      });
+      await addEvent(user.id, application.id, {
+        event_type: "NOTE",
+        event_date: (editing.item.received_at ?? new Date().toISOString()).slice(0, 10),
+        notes: `Inbox import: ${editing.item.message_subject || "job-related email"}${editing.item.sender_email ? ` from ${editing.item.sender_email}` : ""}`,
       });
       await markEmailImportDraftSaved(editing.item.id, application.id);
       await Promise.all([
