@@ -11,10 +11,12 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AddRouteImport } from './routes/add'
+import { Route as AnalyticsRouteImport } from './routes/analytics'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as InterviewsRouteImport } from './routes/interviews'
 import { Route as SettingsRouteImport } from './routes/settings'
 import { Route as ApplicationsIndexRouteImport } from './routes/applications/index'
+import { Route as ApplicationsIdRouteImport } from './routes/applications/$id'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -24,6 +26,11 @@ const IndexRoute = IndexRouteImport.update({
 const AddRoute = AddRouteImport.update({
   id: '/add',
   path: '/add',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AnalyticsRoute = AnalyticsRouteImport.update({
+  id: '/analytics',
+  path: '/analytics',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AuthRoute = AuthRouteImport.update({
@@ -46,54 +53,84 @@ const ApplicationsIndexRoute = ApplicationsIndexRouteImport.update({
   path: '/applications/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApplicationsIdRoute = ApplicationsIdRouteImport.update({
+  id: '/applications/$id',
+  path: '/applications/$id',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/add': typeof AddRoute
+  '/analytics': typeof AnalyticsRoute
   '/auth': typeof AuthRoute
   '/interviews': typeof InterviewsRoute
   '/settings': typeof SettingsRoute
+  '/applications/$id': typeof ApplicationsIdRoute
   '/applications/': typeof ApplicationsIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/add': typeof AddRoute
+  '/analytics': typeof AnalyticsRoute
   '/auth': typeof AuthRoute
   '/interviews': typeof InterviewsRoute
   '/settings': typeof SettingsRoute
+  '/applications/$id': typeof ApplicationsIdRoute
   '/applications': typeof ApplicationsIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/add': typeof AddRoute
+  '/analytics': typeof AnalyticsRoute
   '/auth': typeof AuthRoute
   '/interviews': typeof InterviewsRoute
   '/settings': typeof SettingsRoute
+  '/applications/$id': typeof ApplicationsIdRoute
   '/applications/': typeof ApplicationsIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
-    '/' | '/add' | '/auth' | '/interviews' | '/settings' | '/applications/'
+    | '/'
+    | '/add'
+    | '/analytics'
+    | '/auth'
+    | '/interviews'
+    | '/settings'
+    | '/applications/$id'
+    | '/applications/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/add' | '/auth' | '/interviews' | '/settings' | '/applications'
+  to:
+    | '/'
+    | '/add'
+    | '/analytics'
+    | '/auth'
+    | '/interviews'
+    | '/settings'
+    | '/applications/$id'
+    | '/applications'
   id:
     | '__root__'
     | '/'
     | '/add'
+    | '/analytics'
     | '/auth'
     | '/interviews'
     | '/settings'
+    | '/applications/$id'
     | '/applications/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AddRoute: typeof AddRoute
+  AnalyticsRoute: typeof AnalyticsRoute
   AuthRoute: typeof AuthRoute
   InterviewsRoute: typeof InterviewsRoute
   SettingsRoute: typeof SettingsRoute
+  ApplicationsIdRoute: typeof ApplicationsIdRoute
   ApplicationsIndexRoute: typeof ApplicationsIndexRoute
 }
 
@@ -111,6 +148,13 @@ declare module '@tanstack/react-router' {
       path: '/add'
       fullPath: '/add'
       preLoaderRoute: typeof AddRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/analytics': {
+      id: '/analytics'
+      path: '/analytics'
+      fullPath: '/analytics'
+      preLoaderRoute: typeof AnalyticsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/auth': {
@@ -141,15 +185,24 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApplicationsIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/applications/$id': {
+      id: '/applications/$id'
+      path: '/applications/$id'
+      fullPath: '/applications/$id'
+      preLoaderRoute: typeof ApplicationsIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AddRoute: AddRoute,
+  AnalyticsRoute: AnalyticsRoute,
   AuthRoute: AuthRoute,
   InterviewsRoute: InterviewsRoute,
   SettingsRoute: SettingsRoute,
+  ApplicationsIdRoute: ApplicationsIdRoute,
   ApplicationsIndexRoute: ApplicationsIndexRoute,
 }
 export const routeTree = rootRouteImport
