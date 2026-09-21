@@ -92,8 +92,14 @@ function SettingsPage() {
 
   async function changePassword() {
     if (!user?.email) return;
-    if (newPassword.length < 8) return toast.error("New password must be at least 8 characters");
-    if (newPassword !== confirmPassword) return toast.error("New passwords do not match");
+    if (newPassword.length < 8) {
+      toast.error("New password must be at least 8 characters");
+      return;
+    }
+    if (newPassword !== confirmPassword) {
+      toast.error("New passwords do not match");
+      return;
+    }
     setBusy(true);
     try {
       const { error: verifyError } = await supabase.auth.signInWithPassword({ email: user.email, password: currentPassword });
@@ -114,8 +120,14 @@ function SettingsPage() {
   async function uploadCv(file?: File) {
     if (!user || !file) return;
     const validTypes = ["application/pdf", "application/msword", "application/vnd.openxmlformats-officedocument.wordprocessingml.document"];
-    if (!validTypes.includes(file.type)) return toast.error("Use a PDF, DOC, or DOCX file");
-    if (file.size > 10 * 1024 * 1024) return toast.error("CV must be 10MB or smaller");
+    if (!validTypes.includes(file.type)) {
+      toast.error("Use a PDF, DOC, or DOCX file");
+      return;
+    }
+    if (file.size > 10 * 1024 * 1024) {
+      toast.error("CV must be 10MB or smaller");
+      return;
+    }
     setBusy(true);
     try {
       await uploadLatestCv(user.id, file, profile?.cv_storage_path);

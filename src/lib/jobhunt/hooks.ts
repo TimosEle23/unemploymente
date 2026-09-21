@@ -15,7 +15,10 @@ export function useProfile() {
   const { user } = useAuth();
   return useQuery({
     queryKey: ["profile", user?.id],
-    queryFn: () => fetchProfile(user!.id),
+    queryFn: () => {
+      if (!user) throw new Error("Sign in required");
+      return fetchProfile(user.id);
+    },
     enabled: !!user,
   });
 }
