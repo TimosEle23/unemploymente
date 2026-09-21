@@ -40,11 +40,20 @@ function Bars({ rows, tone = "ok" }: { rows: [string, number][]; tone?: "ok" | "
   return (
     <ul className="space-y-2">
       {rows.map(([label, value]) => (
-        <li key={label} className="flex items-center gap-2">
-          <span className="w-40 shrink-0 truncate font-mono text-[12px] text-foreground">{label}</span>
+        <li
+          key={label}
+          className="grid grid-cols-[minmax(7rem,11rem)_minmax(3rem,1fr)_auto] items-center gap-2 sm:grid-cols-[minmax(10rem,15rem)_minmax(4rem,1fr)_auto]"
+        >
+          <span className="min-w-0 break-words font-mono text-[12px] leading-5 text-foreground">
+            {label}
+          </span>
           <span
             className={
-              tone === "ok" ? "h-3 bg-ok" : tone === "bad" ? "h-3 bg-bad" : "h-3 bg-neutral"
+              tone === "ok"
+                ? "h-3 max-w-full bg-ok"
+                : tone === "bad"
+                  ? "h-3 max-w-full bg-bad"
+                  : "h-3 max-w-full bg-neutral"
             }
             style={{ width: `${Math.max((value / max) * 100, 4)}%` }}
           />
