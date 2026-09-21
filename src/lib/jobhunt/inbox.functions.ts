@@ -112,7 +112,7 @@ function header(headers: { name?: string; value?: string }[] | undefined, name: 
 
 function parseSender(value: string) {
   const match = value.match(/^(.*?)\s*<([^>]+)>$/);
-  return match ? { name: match[1].replace(/^"|"$/g, "").trim() || null, email: match[2] } : { name: null, email: value || null };
+  return match ? { name: match[1]?.replace(/^"|"$/g, "").trim() || null, email: match[2] ?? null } : { name: null, email: value || null };
 }
 
 function extractPublicUrl(text: string) {
@@ -154,8 +154,8 @@ function extractionSchema() {
   const properties: Record<string, unknown> = { is_job_related: { type: "boolean" } };
   for (const field of JOB_FIELDS) properties[field] = { type: ["string", "null"] };
   for (const field of LIST_FIELDS) properties[field] = { type: "array", items: { type: "string" } };
-  properties.salary_min = { type: ["number", "null"] };
-  properties.salary_max = { type: ["number", "null"] };
+  properties["salary_min"] = { type: ["number", "null"] };
+  properties["salary_max"] = { type: ["number", "null"] };
   return { type: "object", additionalProperties: false, properties, required: ["is_job_related", ...JOB_FIELDS, ...LIST_FIELDS, "salary_min", "salary_max"] };
 }
 
@@ -190,9 +190,9 @@ async function gmailMessages(connectionKey: string, days: number): Promise<MailI
   for (const message of (listBody.messages ?? []).slice(0, 12)) {
     const response = await callAsAppUser({ connectionAPIKey: connectionKey, connectorId: GMAIL, requiredScopes: GOOGLE_SCOPES, path: `/gmail/v1/users/me/messages/${encodeURIComponent(message.id)}?format=full` });
     if (!response.ok) continue;
-    const full = await response.json() as { id: string; internalDate?: string; payload?: { headers?: { name?: string; value?: string }[]; mimeType?: string; body?: { data?: string }; parts?: unknown[] } };
+    const full = await response.json() as { id?: string; internalDate?: string; payload?: { headers?: { name?: string; value?: string }[]; mimeType?: string; body?: { data?: string }; parts?: unknown[] } };
     const sender = parseSender(header(full.payload?.headers, "From"));
-    items.push({ id: full.id, subject: header(full.payload?.headers, "Subject"), senderName: sender.name, senderEmail: sender.email, receivedAt: full.internalDate ? new Date(Number(full.internalDate)).toISOString() : null, body: stripHtml(gmailBody(full.payload)) });
+    items.push({ id: full.id ?? message.id, subject: header(full.payload?.headers, "Subject"), senderName: sender.name, senderEmail: sender.email, receivedAt: full.internalDate ? new Date(Number(full.internalDate)).toISOString() : null, body: stripHtml(gmailBody(full.payload)) });
   }
   return items;
 }
@@ -223,10 +223,11 @@ export const scanJobEmails = createServerFn({ method: "POST" })
       if (existing) { skipped += 1; continue; }
       const sourceUrl = extractPublicUrl(mail.body);
       const enrichment = await enrichFromUrl(sourceUrl);
-      const extracted = await extractMail(mail, enrichment.text, sourceUrl);
-      if (!extracted.is_job_related) { skipped += 1; continue; }
-      delete extracted.is_job_related;
-      if (!extracted.job_url && sourceUrl) extracted.job_url = sourceUrl;
+      const result = await extractMail(mail, enrichment.text, sourceUrl);
+      if (!result.is_job_related) { skipped += 1; continue; }
+      const { is_job_related: _classification, ...extracted } = result;
+      void _classification;
+      if (!extracted["job_url"] && sourceUrl) extracted["job_url"] = sourceUrl;
       const missing = [...JOB_FIELDS, ...LIST_FIELDS].filter((field) => extracted[field] == null || (Array.isArray(extracted[field]) && extracted[field].length === 0));
       const { error } = await supabaseAdmin.from("email_import_drafts").insert({
         user_id: context.userId,
@@ -236,7 +237,7 @@ export const scanJobEmails = createServerFn({ method: "POST" })
         sender_name: mail.senderName,
         sender_email: mail.senderEmail,
         received_at: mail.receivedAt,
-        extracted_job: extracted,
+        extracted_job: extracted as never,
         missing_fields: missing,
         source_url: sourceUrl,
         enrichment_status: enrichment.status,

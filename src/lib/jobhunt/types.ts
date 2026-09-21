@@ -212,6 +212,23 @@ export type ExtractedJob = {
   extra_info: string | null;
 };
 
+export type EmailImportDraft = {
+  id: string;
+  connector_id: "google_mail" | "microsoft_outlook";
+  provider_message_id: string;
+  message_subject: string | null;
+  sender_name: string | null;
+  sender_email: string | null;
+  received_at: string | null;
+  extracted_job: ExtractedJob;
+  missing_fields: string[];
+  source_url: string | null;
+  enrichment_status: "NOT_ATTEMPTED" | "ENRICHED" | "INACCESSIBLE" | "FAILED";
+  review_status: "PENDING" | "SAVED" | "DISMISSED";
+  duplicate_application_id: string | null;
+  created_at: string;
+};
+
 export function emptyExtraction(): ExtractedJob {
   return {
     job_title: null,

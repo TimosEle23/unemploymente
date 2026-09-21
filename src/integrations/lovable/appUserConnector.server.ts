@@ -11,7 +11,7 @@ export async function authorizeAppUserOAuth(params: {
   appUserId: string;
   clientAPIKey: string;
   returnUrl: string;
-  connectionAPIKey?: string;
+  connectionAPIKey?: string | undefined;
   credentialsConfiguration: Record<string, unknown>;
 }) {
   const headers: Record<string, string> = {
