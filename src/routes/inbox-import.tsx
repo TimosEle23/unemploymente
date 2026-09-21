@@ -129,7 +129,7 @@ function InboxImportPage() {
       await drafts.refetch();
       toast.success(result.imported ? `${result.imported} job email${result.imported === 1 ? "" : "s"} ready to review` : "No new job emails found");
     } catch (error) {
-      toast.error(error instanceof Error ? error.message : "Inbox scan failed");
+      toast.error(error instanceof Error ? error.message : "Inbox scan failed", { duration: 9000 });
       await status.refetch();
     } finally {
       setBusy(null);
