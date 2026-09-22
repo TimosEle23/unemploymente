@@ -1,15 +1,19 @@
 import { useEffect, useRef, useState } from "react";
 import { createFileRoute } from "@tanstack/react-router";
 import { useQueryClient } from "@tanstack/react-query";
+import { useServerFn } from "@tanstack/react-start";
 import { toast } from "sonner";
 import { Shell } from "@/components/jobhunt/Shell";
 import { Field, Panel, RetroButton, Tag, inputClass } from "@/components/jobhunt/ui";
+import { CvSection } from "@/components/jobhunt/CvSections";
 import { useApplications, useProfile } from "@/lib/jobhunt/hooks";
 import { deleteSeedApplications, downloadLatestCv, removeLatestCv, updateProfile, uploadLatestCv } from "@/lib/jobhunt/api";
+import { extractCvSections } from "@/lib/jobhunt/cv.functions";
 import { insertSeedData } from "@/lib/jobhunt/seed";
 import { useAuth } from "@/lib/auth";
-import { Download, FileText, Trash2, Upload } from "lucide-react";
+import { Download, FileText, ScanText, Trash2, Upload } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
+
 
 export const Route = createFileRoute("/settings")({
   head: () => ({
