@@ -417,7 +417,11 @@ export type Database = {
       profiles: {
         Row: {
           created_at: string
+          cv_education: Json
+          cv_experience: Json
           cv_file_name: string | null
+          cv_projects: Json
+          cv_sections_updated_at: string | null
           cv_storage_path: string | null
           cv_updated_at: string | null
           education: string[]
@@ -431,7 +435,11 @@ export type Database = {
         }
         Insert: {
           created_at?: string
+          cv_education?: Json
+          cv_experience?: Json
           cv_file_name?: string | null
+          cv_projects?: Json
+          cv_sections_updated_at?: string | null
           cv_storage_path?: string | null
           cv_updated_at?: string | null
           education?: string[]
@@ -445,7 +453,11 @@ export type Database = {
         }
         Update: {
           created_at?: string
+          cv_education?: Json
+          cv_experience?: Json
           cv_file_name?: string | null
+          cv_projects?: Json
+          cv_sections_updated_at?: string | null
           cv_storage_path?: string | null
           cv_updated_at?: string | null
           education?: string[]

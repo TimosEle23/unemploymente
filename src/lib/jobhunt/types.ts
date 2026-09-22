@@ -165,6 +165,17 @@ export type Followup = {
   notes: string | null;
 };
 
+/** One work experience / education / project entry read from the CV. */
+export type CvEntry = {
+  title: string | null;
+  organization: string | null;
+  period: string | null;
+  location: string | null;
+  summary: string | null;
+  bullets: string[];
+  technologies: string[];
+};
+
 export type Profile = {
   id: string;
   email: string | null;
@@ -176,7 +187,12 @@ export type Profile = {
   cv_file_name: string | null;
   cv_storage_path: string | null;
   cv_updated_at: string | null;
+  cv_experience: CvEntry[];
+  cv_education: CvEntry[];
+  cv_projects: CvEntry[];
+  cv_sections_updated_at: string | null;
 };
+
 
 /** Structured shape produced by the AI extraction pipeline. */
 export type ExtractedJob = {

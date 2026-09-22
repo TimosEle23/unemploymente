@@ -1,15 +1,19 @@
 import { useEffect, useRef, useState } from "react";
 import { createFileRoute } from "@tanstack/react-router";
 import { useQueryClient } from "@tanstack/react-query";
+import { useServerFn } from "@tanstack/react-start";
 import { toast } from "sonner";
 import { Shell } from "@/components/jobhunt/Shell";
 import { Field, Panel, RetroButton, Tag, inputClass } from "@/components/jobhunt/ui";
+import { CvSection } from "@/components/jobhunt/CvSections";
 import { useApplications, useProfile } from "@/lib/jobhunt/hooks";
 import { deleteSeedApplications, downloadLatestCv, removeLatestCv, updateProfile, uploadLatestCv } from "@/lib/jobhunt/api";
+import { extractCvSections } from "@/lib/jobhunt/cv.functions";
 import { insertSeedData } from "@/lib/jobhunt/seed";
 import { useAuth } from "@/lib/auth";
-import { Download, FileText, Trash2, Upload } from "lucide-react";
+import { Download, FileText, ScanText, Trash2, Upload } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
+
 
 export const Route = createFileRoute("/settings")({
   head: () => ({
@@ -43,7 +47,10 @@ function SettingsPage() {
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [busy, setBusy] = useState(false);
+  const [reading, setReading] = useState(false);
   const cvInput = useRef<HTMLInputElement>(null);
+  const readCv = useServerFn(extractCvSections);
+
 
   useEffect(() => {
     if (!profile) return;
@@ -141,7 +148,26 @@ function SettingsPage() {
     }
   }
 
+  async function readCvSections() {
+    setReading(true);
+    try {
+      const result = await readCv();
+      await queryClient.invalidateQueries({ queryKey: ["profile"] });
+      const total = result.experience.length + result.education.length + result.projects.length;
+      if (!total) {
+        toast.error("No experience, education or projects could be read from your CV.");
+      } else {
+        toast.success(`Read ${result.experience.length} experience, ${result.education.length} education and ${result.projects.length} project entries`);
+      }
+    } catch (error) {
+      toast.error(error instanceof Error ? error.message : "Could not read your CV");
+    } finally {
+      setReading(false);
+    }
+  }
+
   async function seed() {
+
     if (!user) return;
     setBusy(true);
     try {
@@ -222,8 +248,10 @@ function SettingsPage() {
                 </div>
               </div>
               <div className="flex flex-wrap gap-2">
+                <RetroButton variant="ok" size="sm" onClick={readCvSections} disabled={reading}><ScanText className="h-3 w-3" /> {reading ? "READING CV..." : "READ SECTIONS FROM CV"}</RetroButton>
                 <RetroButton size="sm" onClick={() => downloadLatestCv(profile.cv_storage_path ?? "", profile.cv_file_name ?? "CV")}><Download className="h-3 w-3" /> DOWNLOAD</RetroButton>
                 <RetroButton size="sm" onClick={() => cvInput.current?.click()}><Upload className="h-3 w-3" /> REPLACE</RetroButton>
+
                 <RetroButton variant="bad" size="sm" onClick={async () => {
                   if (!user || !profile.cv_storage_path || !window.confirm("Remove your latest CV?")) return;
                   await removeLatestCv(user.id, profile.cv_storage_path);
@@ -239,6 +267,29 @@ function SettingsPage() {
             </div>
           )}
         </Panel>
+
+        {profile?.cv_sections_updated_at ? (
+          <p className="pixel-text text-[7px] text-muted-foreground">CV SECTIONS READ {profile.cv_sections_updated_at.slice(0, 10)}</p>
+        ) : null}
+
+        <CvSection
+          title="WORK EXPERIENCE (FROM CV)"
+          entries={profile?.cv_experience ?? []}
+          emptyHint="Upload your CV and press READ SECTIONS FROM CV to keep your work experience here, ready to copy into applications."
+        />
+
+        <CvSection
+          title="EDUCATION (FROM CV)"
+          entries={profile?.cv_education ?? []}
+          emptyHint="Your degrees will appear here after reading your CV, each one copyable with one click."
+        />
+
+        <CvSection
+          title="PROJECTS (FROM CV)"
+          entries={profile?.cv_projects ?? []}
+          emptyHint="Your projects will appear here after reading your CV, so you can paste them into application forms."
+        />
+
 
         <Panel title="ACCOUNT INFORMATION">
           <div className="space-y-3">
