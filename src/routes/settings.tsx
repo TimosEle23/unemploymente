@@ -248,8 +248,10 @@ function SettingsPage() {
                 </div>
               </div>
               <div className="flex flex-wrap gap-2">
+                <RetroButton variant="ok" size="sm" onClick={readCvSections} disabled={reading}><ScanText className="h-3 w-3" /> {reading ? "READING CV..." : "READ SECTIONS FROM CV"}</RetroButton>
                 <RetroButton size="sm" onClick={() => downloadLatestCv(profile.cv_storage_path ?? "", profile.cv_file_name ?? "CV")}><Download className="h-3 w-3" /> DOWNLOAD</RetroButton>
                 <RetroButton size="sm" onClick={() => cvInput.current?.click()}><Upload className="h-3 w-3" /> REPLACE</RetroButton>
+
                 <RetroButton variant="bad" size="sm" onClick={async () => {
                   if (!user || !profile.cv_storage_path || !window.confirm("Remove your latest CV?")) return;
                   await removeLatestCv(user.id, profile.cv_storage_path);
