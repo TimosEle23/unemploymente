@@ -17,7 +17,7 @@ const NAV = [
   { label: "INBOX IMPORT", to: "/inbox-import" },
   { label: "INTERVIEWS", to: "/interviews" },
   { label: "ANALYTICS", to: "/analytics" },
-  { label: "SETTINGS", to: "/settings" },
+  { label: "PROFILE", to: "/settings" },
 ] as const;
 
 export function Shell({ children }: { children: ReactNode }) {
