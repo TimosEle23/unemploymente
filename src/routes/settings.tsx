@@ -151,7 +151,7 @@ function SettingsPage() {
   async function readCvSections() {
     setReading(true);
     try {
-      const result = await readCv({ data: {} });
+      const result = await readCv();
       await queryClient.invalidateQueries({ queryKey: ["profile"] });
       const total = result.experience.length + result.education.length + result.projects.length;
       if (!total) {
