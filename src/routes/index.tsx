@@ -172,9 +172,9 @@ function Dashboard() {
             {skillsInDemand.length ? (
               <ul className="space-y-2">
                 {skillsInDemand.map(([skill, count]) => (
-                  <li key={skill} className="flex items-center gap-2">
-                    <span className="w-40 shrink-0 font-mono text-[12px] text-foreground">{skill}</span>
-                    <span className="h-3 bg-ok" style={{ width: `${Math.min(count * 28, 220)}px` }} />
+                  <li key={skill} className="flex items-start gap-2">
+                    <span className="flex-1 min-w-0 break-words font-mono text-[12px] text-foreground leading-tight">{skill}</span>
+                    <span className="h-3 shrink-0 bg-ok mt-0.5" style={{ width: `${Math.min(count * 28, 220)}px` }} />
                     <Tag>{count}</Tag>
                   </li>
                 ))}
