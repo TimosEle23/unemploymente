@@ -268,6 +268,29 @@ function SettingsPage() {
           )}
         </Panel>
 
+        {profile?.cv_sections_updated_at ? (
+          <p className="pixel-text text-[7px] text-muted-foreground">CV SECTIONS READ {profile.cv_sections_updated_at.slice(0, 10)}</p>
+        ) : null}
+
+        <CvSection
+          title="WORK EXPERIENCE (FROM CV)"
+          entries={profile?.cv_experience ?? []}
+          emptyHint="Upload your CV and press READ SECTIONS FROM CV to keep your work experience here, ready to copy into applications."
+        />
+
+        <CvSection
+          title="EDUCATION (FROM CV)"
+          entries={profile?.cv_education ?? []}
+          emptyHint="Your degrees will appear here after reading your CV, each one copyable with one click."
+        />
+
+        <CvSection
+          title="PROJECTS (FROM CV)"
+          entries={profile?.cv_projects ?? []}
+          emptyHint="Your projects will appear here after reading your CV, so you can paste them into application forms."
+        />
+
+
         <Panel title="ACCOUNT INFORMATION">
           <div className="space-y-3">
             <Field label="EMAIL">
