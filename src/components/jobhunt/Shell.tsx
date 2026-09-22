@@ -89,7 +89,7 @@ export function Shell({ children }: { children: ReactNode }) {
           <Link to="/" className="block">
             <h1 className="pixel-text text-[18px] text-foreground sm:text-[22px]">JOBHUNT</h1>
             <p className="pixel-text pt-1 text-[8px] text-muted-foreground">
-              AI / ML APPLICATION TRACKER
+              APPLICATION TRACKER
             </p>
           </Link>
           <div className="flex items-center gap-2">
