@@ -47,7 +47,10 @@ function SettingsPage() {
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [busy, setBusy] = useState(false);
+  const [reading, setReading] = useState(false);
   const cvInput = useRef<HTMLInputElement>(null);
+  const readCv = useServerFn(extractCvSections);
+
 
   useEffect(() => {
     if (!profile) return;
@@ -145,7 +148,26 @@ function SettingsPage() {
     }
   }
 
+  async function readCvSections() {
+    setReading(true);
+    try {
+      const result = await readCv({ data: {} });
+      await queryClient.invalidateQueries({ queryKey: ["profile"] });
+      const total = result.experience.length + result.education.length + result.projects.length;
+      if (!total) {
+        toast.error("No experience, education or projects could be read from your CV.");
+      } else {
+        toast.success(`Read ${result.experience.length} experience, ${result.education.length} education and ${result.projects.length} project entries`);
+      }
+    } catch (error) {
+      toast.error(error instanceof Error ? error.message : "Could not read your CV");
+    } finally {
+      setReading(false);
+    }
+  }
+
   async function seed() {
+
     if (!user) return;
     setBusy(true);
     try {
