@@ -11,7 +11,7 @@ import { useAuth } from "@/lib/auth";
 import { useApplications } from "@/lib/jobhunt/hooks";
 import { addEvent, createApplication, dismissEmailImportDraft, fetchEmailImportDrafts, findDuplicates, markEmailImportDraftSaved } from "@/lib/jobhunt/api";
 import { completeInboxConnection, disconnectInbox, getInboxConnectionStatus, scanJobEmails, startInboxConnection } from "@/lib/jobhunt/inbox.functions";
-import { emptyExtraction, type EmailImportDraft } from "@/lib/jobhunt/types";
+import { emptyExtraction, type EmailImportDraft, type Status } from "@/lib/jobhunt/types";
 
 type ConnectorId = "google_mail" | "microsoft_outlook";
 
@@ -111,6 +111,9 @@ function InboxImportPage() {
   const [days, setDays] = useState(30);
   const [busy, setBusy] = useState<string | null>(null);
   const [editing, setEditing] = useState<{ item: EmailImportDraft; draft: Draft } | null>(null);
+  const [stages, setStages] = useState<Record<string, Status>>({});
+  const stageOf = (item: EmailImportDraft) => stages[item.id] ?? guessStage(item);
+  const setStage = (item: EmailImportDraft, s: Status) => { setStages((m) => ({ ...m, [item.id]: s })); if (editing?.item.id === item.id) setEditing({ ...editing, draft: { ...editing.draft, status: s } }); };
 
   const statusFn = useServerFn(getInboxConnectionStatus);
   const startFn = useServerFn(startInboxConnection);
@@ -285,9 +288,10 @@ function InboxImportPage() {
                         <h2 className="mt-3 break-words font-sans text-[17px] font-semibold leading-6 text-foreground">{job.job_title || "TITLE NEEDS REVIEW"}</h2>
                         <p className="mt-1 break-words font-mono text-[12px] leading-5 text-muted-foreground">{job.company || "COMPANY NEEDS REVIEW"} · {item.message_subject || "NO SUBJECT"}</p>
                         <p className="mt-1 break-words font-mono text-[11px] leading-5 text-muted-foreground">{item.sender_email || "UNKNOWN SENDER"}{item.received_at ? ` · ${new Date(item.received_at).toLocaleDateString()}` : ""}</p>
+                        <StagePath value={stageOf(item)} onChange={(s) => setStage(item, s)} />
                       </div>
                       <div className="flex flex-wrap gap-2">
-                        <RetroButton size="sm" variant="primary" onClick={() => { setEditing({ item, draft: toReviewDraft(item) }); window.setTimeout(() => document.getElementById(`review-${item.id}`)?.scrollIntoView({ behavior: "smooth", block: "start" }), 50); }}>REVIEW</RetroButton>
+                        <RetroButton size="sm" variant="primary" onClick={() => { setEditing({ item, draft: toReviewDraft(item, stageOf(item)) }); window.setTimeout(() => document.getElementById(`review-${item.id}`)?.scrollIntoView({ behavior: "smooth", block: "start" }), 50); }}>REVIEW</RetroButton>
                         <RetroButton size="sm" variant="ghost" onClick={() => dismiss(item)}>DISMISS</RetroButton>
                       </div>
                     </div>
