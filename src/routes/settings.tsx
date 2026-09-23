@@ -166,34 +166,6 @@ function SettingsPage() {
     }
   }
 
-  async function seed() {
-
-    if (!user) return;
-    setBusy(true);
-    try {
-      await insertSeedData(user.id);
-      await queryClient.invalidateQueries({ queryKey: ["applications"] });
-      toast.success("Example applications added");
-    } catch (error) {
-      toast.error(error instanceof Error ? error.message : "Could not add example data");
-    } finally {
-      setBusy(false);
-    }
-  }
-
-  async function removeSeed() {
-    setBusy(true);
-    try {
-      await deleteSeedApplications();
-      await queryClient.invalidateQueries({ queryKey: ["applications"] });
-      toast.success("Example applications deleted");
-    } catch (error) {
-      toast.error(error instanceof Error ? error.message : "Could not delete example data");
-    } finally {
-      setBusy(false);
-    }
-  }
-
   return (
     <Shell>
       <div className="space-y-4">
@@ -311,22 +283,6 @@ function SettingsPage() {
               <div className="sm:col-span-3"><RetroButton variant="ok" onClick={changePassword} disabled={busy || !currentPassword || !newPassword || !confirmPassword}>UPDATE PASSWORD</RetroButton></div>
             </div>
           )}
-        </Panel>
-
-        <Panel title="EXAMPLE (SEED) DATA">
-          <p className="font-sans text-[13px] text-muted-foreground">
-            {seedCount
-              ? `${seedCount} example applications are loaded. They are marked SEED DATA on their cards.`
-              : "Load five fictional example applications to explore the interface."}
-          </p>
-          <div className="flex flex-wrap gap-2 pt-3">
-            <RetroButton onClick={seed} disabled={busy}>
-              LOAD EXAMPLE DATA
-            </RetroButton>
-            <RetroButton variant="bad" onClick={removeSeed} disabled={busy || !seedCount}>
-              DELETE EXAMPLE DATA
-            </RetroButton>
-          </div>
         </Panel>
 
       </div>
