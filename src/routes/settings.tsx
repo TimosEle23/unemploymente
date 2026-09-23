@@ -6,10 +6,9 @@ import { toast } from "sonner";
 import { Shell } from "@/components/jobhunt/Shell";
 import { Field, Panel, RetroButton, Tag, inputClass } from "@/components/jobhunt/ui";
 import { CvSection } from "@/components/jobhunt/CvSections";
-import { useApplications, useProfile } from "@/lib/jobhunt/hooks";
-import { deleteSeedApplications, downloadLatestCv, removeLatestCv, updateProfile, uploadLatestCv } from "@/lib/jobhunt/api";
+import { useProfile } from "@/lib/jobhunt/hooks";
+import { downloadLatestCv, removeLatestCv, updateProfile, uploadLatestCv } from "@/lib/jobhunt/api";
 import { extractCvSections } from "@/lib/jobhunt/cv.functions";
-import { insertSeedData } from "@/lib/jobhunt/seed";
 import { useAuth } from "@/lib/auth";
 import { Download, FileText, ScanText, Trash2, Upload } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
@@ -26,7 +25,7 @@ export const Route = createFileRoute("/settings")({
       { property: "og:title", content: "My profile — JOBHUNT" },
       {
         property: "og:description",
-        content: "Your education, technical skills and example data controls for JOBHUNT.",
+        content: "Your education, technical skills, CV and account settings for JOBHUNT.",
       },
     ],
   }),
@@ -36,7 +35,6 @@ export const Route = createFileRoute("/settings")({
 function SettingsPage() {
   const { user } = useAuth();
   const { data: profile } = useProfile();
-  const { data: apps = [] } = useApplications();
   const queryClient = useQueryClient();
   const [skills, setSkills] = useState("");
   const [education, setEducation] = useState("");
@@ -62,7 +60,6 @@ function SettingsPage() {
 
   useEffect(() => setAccountEmail(user?.email ?? ""), [user?.email]);
 
-  const seedCount = apps.filter((app) => app.is_seed).length;
 
   async function save() {
     if (!user) return;
@@ -163,34 +160,6 @@ function SettingsPage() {
       toast.error(error instanceof Error ? error.message : "Could not read your CV");
     } finally {
       setReading(false);
-    }
-  }
-
-  async function seed() {
-
-    if (!user) return;
-    setBusy(true);
-    try {
-      await insertSeedData(user.id);
-      await queryClient.invalidateQueries({ queryKey: ["applications"] });
-      toast.success("Example applications added");
-    } catch (error) {
-      toast.error(error instanceof Error ? error.message : "Could not add example data");
-    } finally {
-      setBusy(false);
-    }
-  }
-
-  async function removeSeed() {
-    setBusy(true);
-    try {
-      await deleteSeedApplications();
-      await queryClient.invalidateQueries({ queryKey: ["applications"] });
-      toast.success("Example applications deleted");
-    } catch (error) {
-      toast.error(error instanceof Error ? error.message : "Could not delete example data");
-    } finally {
-      setBusy(false);
     }
   }
 
@@ -311,22 +280,6 @@ function SettingsPage() {
               <div className="sm:col-span-3"><RetroButton variant="ok" onClick={changePassword} disabled={busy || !currentPassword || !newPassword || !confirmPassword}>UPDATE PASSWORD</RetroButton></div>
             </div>
           )}
-        </Panel>
-
-        <Panel title="EXAMPLE (SEED) DATA">
-          <p className="font-sans text-[13px] text-muted-foreground">
-            {seedCount
-              ? `${seedCount} example applications are loaded. They are marked SEED DATA on their cards.`
-              : "Load five fictional example applications to explore the interface."}
-          </p>
-          <div className="flex flex-wrap gap-2 pt-3">
-            <RetroButton onClick={seed} disabled={busy}>
-              LOAD EXAMPLE DATA
-            </RetroButton>
-            <RetroButton variant="bad" onClick={removeSeed} disabled={busy || !seedCount}>
-              DELETE EXAMPLE DATA
-            </RetroButton>
-          </div>
         </Panel>
 
       </div>
