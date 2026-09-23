@@ -25,7 +25,7 @@ export const Route = createFileRoute("/settings")({
       { property: "og:title", content: "My profile — JOBHUNT" },
       {
         property: "og:description",
-        content: "Your education, technical skills and example data controls for JOBHUNT.",
+        content: "Your education, technical skills, CV and account settings for JOBHUNT.",
       },
     ],
   }),
