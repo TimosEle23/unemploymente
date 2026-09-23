@@ -56,16 +56,51 @@ function waitForOAuth(popup: Window, connectorId: ConnectorId) {
   });
 }
 
-function toReviewDraft(item: EmailImportDraft): Draft {
+const STAGES: { key: Status; label: string }[] = [
+  { key: "APPLIED", label: "APPLIED" },
+  { key: "HR_INTERVIEW", label: "INTERVIEW" },
+  { key: "OFFER", label: "OFFER" },
+  { key: "REJECTED", label: "REJECTED" },
+];
+
+function guessStage(item: EmailImportDraft): Status {
+  const text = `${item.message_subject ?? ""} ${item.extracted_job?.extra_info ?? ""}`.toLowerCase();
+  if (/unfortunately|not moving forward|rejected|regret|other candidates/.test(text)) return "REJECTED";
+  if (/\boffer\b/.test(text)) return "OFFER";
+  if (/interview|schedule|call with|next step/.test(text)) return "HR_INTERVIEW";
+  return "APPLIED";
+}
+
+function toReviewDraft(item: EmailImportDraft, stage: Status): Draft {
+  const date = (item.received_at ?? new Date().toISOString()).slice(0, 10);
   return {
     ...emptyExtraction(),
     ...item.extracted_job,
-    status: "NEW",
-    applied_at: null,
+    status: stage,
+    applied_at: date,
     next_action: null,
     next_action_date: null,
     notes: item.message_subject ? `Imported from email: ${item.message_subject}` : null,
   };
+}
+
+function StagePath({ value, onChange }: { value: Status; onChange: (s: Status) => void }) {
+  const idx = STAGES.findIndex((s) => s.key === value);
+  return (
+    <div className="mt-3 flex flex-wrap items-center gap-1">
+      {STAGES.map((s, i) => {
+        const active = s.key === value;
+        const passed = value !== "REJECTED" && i < idx && s.key !== "REJECTED";
+        const tone = active ? (s.key === "REJECTED" ? "border-bad bg-bad text-background" : "border-ok bg-ok text-background") : passed ? "border-ok text-ok" : "border-border text-muted-foreground";
+        return (
+          <div key={s.key} className="flex items-center gap-1">
+            {i > 0 ? <span className="text-muted-foreground">›</span> : null}
+            <button type="button" onClick={() => onChange(s.key)} className={`pixel-text border-2 px-2 py-1 text-[8px] ${tone}`}>{s.label}</button>
+          </div>
+        );
+      })}
+    </div>
+  );
 }
 
 function InboxImportPage() {
