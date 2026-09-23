@@ -128,8 +128,8 @@ export function Shell({ children }: { children: ReactNode }) {
               <>
                 <Popover>
                   <PopoverTrigger asChild>
-                    <RetroButton variant="ghost" size="sm" title="Notifications" aria-label="Notifications" className="relative">
-                      <Bell className="h-4 w-4" />
+                    <RetroButton variant="ghost" size="sm" title="Notifications" aria-label="Notifications" className="relative h-7 w-7 p-0">
+                      <Bell className="h-4 w-4 text-ok" />
                       {unreadCount ? (
                         <span className="absolute -right-1 -top-1 flex h-4 min-w-4 items-center justify-center bg-ok px-1 font-mono text-[9px] text-ok-foreground">
                           {unreadCount > 9 ? "9+" : unreadCount}
@@ -172,8 +172,8 @@ export function Shell({ children }: { children: ReactNode }) {
                 </Popover>
                 <Popover>
                   <PopoverTrigger asChild>
-                    <RetroButton variant="ghost" size="sm" title="Profile and account" aria-label="Profile and account">
-                      <UserRound className="h-4 w-4" />
+                    <RetroButton variant="ghost" size="sm" title="Profile and account" aria-label="Profile and account" className="h-7 w-7 p-0">
+                      <UserRound className="h-4 w-4 text-ok" />
                     </RetroButton>
                   </PopoverTrigger>
                   <PopoverContent align="end" className="w-64 rounded-none border-border bg-background p-0 shadow-none hard-shadow">
