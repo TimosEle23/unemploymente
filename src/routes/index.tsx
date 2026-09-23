@@ -7,6 +7,7 @@ import { useApplications } from "@/lib/jobhunt/hooks";
 import { ACTIVE_STATUSES, INTERVIEW_STATUSES, type Application } from "@/lib/jobhunt/types";
 
 export const Route = createFileRoute("/")({
+  staticData: { sitemap: true },
   head: () => ({
     meta: [
       { title: "Unemploymente" },

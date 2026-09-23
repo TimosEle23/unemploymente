@@ -45,6 +45,7 @@ import {
 } from "@/lib/jobhunt/types";
 
 export const Route = createFileRoute("/applications/$id")({
+  staticData: { sitemap: false },
   head: () => ({
     meta: [
       { title: "Application detail — Unemploymente" },

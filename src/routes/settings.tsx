@@ -15,6 +15,7 @@ import { supabase } from "@/integrations/supabase/client";
 
 
 export const Route = createFileRoute("/settings")({
+  staticData: { sitemap: false },
   head: () => ({
     meta: [
       { title: "My profile — Unemploymente" },

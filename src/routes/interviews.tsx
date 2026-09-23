@@ -8,6 +8,7 @@ import { useAuth } from "@/lib/auth";
 import { INTERVIEW_STATUSES } from "@/lib/jobhunt/types";
 
 export const Route = createFileRoute("/interviews")({
+  staticData: { sitemap: false },
   head: () => ({
     meta: [
       { title: "Interviews — Unemploymente" },
