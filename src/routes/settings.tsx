@@ -6,7 +6,7 @@ import { toast } from "sonner";
 import { Shell } from "@/components/jobhunt/Shell";
 import { Field, Panel, RetroButton, Tag, inputClass } from "@/components/jobhunt/ui";
 import { CvSection } from "@/components/jobhunt/CvSections";
-import { useApplications, useProfile } from "@/lib/jobhunt/hooks";
+import { useProfile } from "@/lib/jobhunt/hooks";
 import { downloadLatestCv, removeLatestCv, updateProfile, uploadLatestCv } from "@/lib/jobhunt/api";
 import { extractCvSections } from "@/lib/jobhunt/cv.functions";
 import { useAuth } from "@/lib/auth";
@@ -35,7 +35,6 @@ export const Route = createFileRoute("/settings")({
 function SettingsPage() {
   const { user } = useAuth();
   const { data: profile } = useProfile();
-  const { data: apps = [] } = useApplications();
   const queryClient = useQueryClient();
   const [skills, setSkills] = useState("");
   const [education, setEducation] = useState("");
