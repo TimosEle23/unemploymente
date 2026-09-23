@@ -5,6 +5,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { lovable } from "@/integrations/lovable/index";
 import { useAuth } from "@/lib/auth";
 import { Field, RetroButton, inputClass } from "@/components/jobhunt/ui";
+import unemploymenteLogo from "@/assets/unemploymente-logo.png";
 
 export const Route = createFileRoute("/auth")({
   head: () => ({
@@ -67,6 +68,7 @@ function AuthPage() {
     <div className="flex min-h-screen items-center justify-center bg-background px-4">
       <div className="w-full max-w-md">
         <div className="pb-6 text-center">
+          <img src={unemploymenteLogo} alt="Unemploymente" className="mx-auto mb-4 h-24 w-20 object-contain" />
           <h1 className="pixel-text text-[22px] text-foreground">JOBHUNT</h1>
           <p className="pixel-text pt-2 text-[8px] text-muted-foreground">
             AI / ML APPLICATION TRACKER

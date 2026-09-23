@@ -9,6 +9,7 @@ import { RetroButton } from "./ui";
 import { cn } from "@/lib/utils";
 import { useApplications } from "@/lib/jobhunt/hooks";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import unemploymenteLogo from "@/assets/unemploymente-logo.png";
 
 const NAV = [
   { label: "DASHBOARD", to: "/" },
@@ -86,11 +87,14 @@ export function Shell({ children }: { children: ReactNode }) {
     <div className="min-h-screen bg-background">
       <header className="border-b-2 border-border bg-panel">
         <div className="mx-auto flex max-w-7xl flex-wrap items-center justify-between gap-3 px-4 py-3">
-          <Link to="/" className="block">
-            <h1 className="pixel-text text-[18px] text-foreground sm:text-[22px]">JOBHUNT</h1>
-            <p className="pixel-text pt-1 text-[8px] text-muted-foreground">
-              APPLICATION TRACKER
-            </p>
+          <Link to="/" className="flex min-w-0 items-center gap-3">
+            <img src={unemploymenteLogo} alt="Unemploymente" className="h-12 w-10 shrink-0 object-contain" />
+            <div className="min-w-0">
+              <h1 className="pixel-text text-[18px] text-foreground sm:text-[22px]">JOBHUNT</h1>
+              <p className="pixel-text pt-1 text-[8px] text-muted-foreground">
+                APPLICATION TRACKER
+              </p>
+            </div>
           </Link>
           <div className="flex items-center gap-2">
             <RetroButton
