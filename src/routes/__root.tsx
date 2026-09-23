@@ -75,16 +75,17 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "JOBHUNT — AI / ML Application Tracker" },
+      { title: "Unemploymente" },
       {
         name: "description",
         content:
-          "JOBHUNT is a personal AI and Machine Learning job application tracker with screenshot-to-data extraction.",
+          "Track every job application in one place. Position, company, status, deadline, required skills and interview progress, plus analytics on the skills you lack. Add jobs from a screenshot or your Gmail inbox, then track position, company, status, deadline, skills needed and every interview stage.",
       },
-      { property: "og:title", content: "JOBHUNT — AI / ML Application Tracker" },
+      { property: "og:title", content: "Unemploymente" },
       {
         property: "og:description",
-        content: "Track AI and ML job applications in a retro terminal style command center.",
+        content:
+          "Track every job application in one place. Position, company, status, deadline, required skills and interview progress, plus analytics on the skills you lack. Add jobs from a screenshot or your Gmail inbox, then track position, company, status, deadline, skills needed and every interview stage.",
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },

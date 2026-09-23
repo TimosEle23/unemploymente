@@ -10,10 +10,10 @@ import unemploymenteLogo from "@/assets/unemploymente-logo.png";
 export const Route = createFileRoute("/auth")({
   head: () => ({
     meta: [
-      { title: "Sign in — JOBHUNT" },
-      { name: "description", content: "Sign in to your JOBHUNT AI / ML application tracker." },
-      { property: "og:title", content: "Sign in — JOBHUNT" },
-      { property: "og:description", content: "Access your private AI / ML job application tracker." },
+      { title: "Sign in — Unemploymente" },
+      { name: "description", content: "Track every job application in one place. Position, company, status, deadline, required skills and interview progress, plus analytics on the skills you lack. Add jobs from a screenshot or your Gmail inbox, then track position, company, status, deadline, skills needed and every interview stage." },
+      { property: "og:title", content: "Sign in — Unemploymente" },
+      { property: "og:description", content: "Track every job application in one place. Position, company, status, deadline, required skills and interview progress, plus analytics on the skills you lack. Add jobs from a screenshot or your Gmail inbox, then track position, company, status, deadline, skills needed and every interview stage." },
     ],
   }),
   component: AuthPage,

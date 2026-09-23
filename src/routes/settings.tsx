@@ -17,15 +17,17 @@ import { supabase } from "@/integrations/supabase/client";
 export const Route = createFileRoute("/settings")({
   head: () => ({
     meta: [
-      { title: "My profile — JOBHUNT" },
+      { title: "My profile — Unemploymente" },
       {
         name: "description",
-        content: "Store your education and technical skills so JOBHUNT can compare them against job requirements.",
+        content:
+          "Track every job application in one place. Position, company, status, deadline, required skills and interview progress, plus analytics on the skills you lack. Add jobs from a screenshot or your Gmail inbox, then track position, company, status, deadline, skills needed and every interview stage.",
       },
-      { property: "og:title", content: "My profile — JOBHUNT" },
+      { property: "og:title", content: "My profile — Unemploymente" },
       {
         property: "og:description",
-        content: "Your education, technical skills, CV and account settings for JOBHUNT.",
+        content:
+          "Track every job application in one place. Position, company, status, deadline, required skills and interview progress, plus analytics on the skills you lack. Add jobs from a screenshot or your Gmail inbox, then track position, company, status, deadline, skills needed and every interview stage.",
       },
     ],
   }),

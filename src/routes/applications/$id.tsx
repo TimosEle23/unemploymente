@@ -47,15 +47,17 @@ import {
 export const Route = createFileRoute("/applications/$id")({
   head: () => ({
     meta: [
-      { title: "Application detail — JOBHUNT" },
+      { title: "Application detail — Unemploymente" },
       {
         name: "description",
-        content: "Full job advertisement details, timeline, notes, follow ups and original screenshots.",
+        content:
+          "Track every job application in one place. Position, company, status, deadline, required skills and interview progress, plus analytics on the skills you lack. Add jobs from a screenshot or your Gmail inbox, then track position, company, status, deadline, skills needed and every interview stage.",
       },
-      { property: "og:title", content: "Application detail — JOBHUNT" },
+      { property: "og:title", content: "Application detail — Unemploymente" },
       {
         property: "og:description",
-        content: "Everything extracted from the job advertisement, plus your notes and interview timeline.",
+        content:
+          "Track every job application in one place. Position, company, status, deadline, required skills and interview progress, plus analytics on the skills you lack. Add jobs from a screenshot or your Gmail inbox, then track position, company, status, deadline, skills needed and every interview stage.",
       },
     ],
   }),

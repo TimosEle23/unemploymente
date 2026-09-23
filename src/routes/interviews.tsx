@@ -10,15 +10,17 @@ import { INTERVIEW_STATUSES } from "@/lib/jobhunt/types";
 export const Route = createFileRoute("/interviews")({
   head: () => ({
     meta: [
-      { title: "Interviews — JOBHUNT" },
+      { title: "Interviews — Unemploymente" },
       {
         name: "description",
-        content: "Interview stage applications, upcoming interview preparation and recorded interview events.",
+        content:
+          "Track every job application in one place. Position, company, status, deadline, required skills and interview progress, plus analytics on the skills you lack. Add jobs from a screenshot or your Gmail inbox, then track position, company, status, deadline, skills needed and every interview stage.",
       },
-      { property: "og:title", content: "Interviews — JOBHUNT" },
+      { property: "og:title", content: "Interviews — Unemploymente" },
       {
         property: "og:description",
-        content: "Track HR, technical and final interview stages for your AI / ML applications.",
+        content:
+          "Track every job application in one place. Position, company, status, deadline, required skills and interview progress, plus analytics on the skills you lack. Add jobs from a screenshot or your Gmail inbox, then track position, company, status, deadline, skills needed and every interview stage.",
       },
     ],
   }),
