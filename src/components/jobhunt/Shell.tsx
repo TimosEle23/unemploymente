@@ -103,7 +103,7 @@ export function Shell({ children }: { children: ReactNode }) {
               onClick={shareJobhunt}
               aria-label="Invite friends"
               title="Invite friends"
-              className="gap-1.5"
+              className="h-8 w-36 gap-1.5"
             >
               <img
                 src={inviteFriendsIcon.url}
@@ -119,7 +119,7 @@ export function Shell({ children }: { children: ReactNode }) {
               onClick={() => navigate({ to: "/add" })}
               aria-label="Add job"
               title="Add job"
-              className="gap-1.5"
+              className="h-8 w-36 gap-1.5"
             >
               <Plus className="h-3.5 w-3.5" />
               <span>ADD JOB</span>
