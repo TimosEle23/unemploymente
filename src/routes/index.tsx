@@ -9,16 +9,17 @@ import { ACTIVE_STATUSES, INTERVIEW_STATUSES, type Application } from "@/lib/job
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "JOBHUNT" },
+      { title: "Unemploymente" },
       {
         name: "description",
         content:
-          "JOBHUNT dashboard: AI and Machine Learning job application statistics, upcoming actions and active applications.",
+          "Track every job application in one place. Position, company, status, deadline, required skills and interview progress, plus analytics on the skills you lack. Add jobs from a screenshot or your Gmail inbox, then track position, company, status, deadline, skills needed and every interview stage.",
       },
-      { property: "og:title", content: "JOBHUNT" },
+      { property: "og:title", content: "Unemploymente" },
       {
         property: "og:description",
-        content: "Your AI / ML job hunting command center: stats, upcoming actions, active applications.",
+        content:
+          "Track every job application in one place. Position, company, status, deadline, required skills and interview progress, plus analytics on the skills you lack. Add jobs from a screenshot or your Gmail inbox, then track position, company, status, deadline, skills needed and every interview stage.",
       },
     ],
   }),

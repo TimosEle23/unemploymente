@@ -18,10 +18,10 @@ type ConnectorId = "google_mail" | "microsoft_outlook";
 export const Route = createFileRoute("/inbox-import")({
   head: () => ({
     meta: [
-      { title: "Inbox import — JOBHUNT" },
-      { name: "description", content: "Connect an inbox, find job-related emails, and review extracted applications before saving." },
-      { property: "og:title", content: "Inbox import — JOBHUNT" },
-      { property: "og:description", content: "Review job applications extracted from your connected inbox." },
+      { title: "Inbox import — Unemploymente" },
+      { name: "description", content: "Track every job application in one place. Position, company, status, deadline, required skills and interview progress, plus analytics on the skills you lack. Add jobs from a screenshot or your Gmail inbox, then track position, company, status, deadline, skills needed and every interview stage." },
+      { property: "og:title", content: "Inbox import — Unemploymente" },
+      { property: "og:description", content: "Track every job application in one place. Position, company, status, deadline, required skills and interview progress, plus analytics on the skills you lack. Add jobs from a screenshot or your Gmail inbox, then track position, company, status, deadline, skills needed and every interview stage." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
     ],

@@ -9,16 +9,17 @@ import { INTERVIEW_STATUSES, STATUS_LABEL, STATUSES, type Application } from "@/
 export const Route = createFileRoute("/analytics")({
   head: () => ({
     meta: [
-      { title: "Analytics — JOBHUNT" },
+      { title: "Analytics — Unemploymente" },
       {
         name: "description",
         content:
-          "Application statistics per week and month, status breakdown, most requested skills and interview conversion.",
+          "Track every job application in one place. Position, company, status, deadline, required skills and interview progress, plus analytics on the skills you lack. Add jobs from a screenshot or your Gmail inbox, then track position, company, status, deadline, skills needed and every interview stage.",
       },
-      { property: "og:title", content: "Analytics — JOBHUNT" },
+      { property: "og:title", content: "Analytics — Unemploymente" },
       {
         property: "og:description",
-        content: "Retro styled analytics for your AI / ML job search: volume, status, skills, conversion.",
+        content:
+          "Track every job application in one place. Position, company, status, deadline, required skills and interview progress, plus analytics on the skills you lack. Add jobs from a screenshot or your Gmail inbox, then track position, company, status, deadline, skills needed and every interview stage.",
       },
     ],
   }),

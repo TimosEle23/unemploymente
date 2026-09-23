@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { createFileRoute } from "@tanstack/react-router";
 
 export const Route = createFileRoute("/oauth/microsoft_outlook/return")({
-  head: () => ({ meta: [{ title: "Connect Outlook — JOBHUNT" }, { name: "description", content: "Finish connecting Outlook to JOBHUNT." }, { property: "og:title", content: "Connect Outlook — JOBHUNT" }, { property: "og:description", content: "Finish connecting Outlook to JOBHUNT." }, { property: "og:type", content: "website" }, { name: "twitter:card", content: "summary" }] }),
+  head: () => ({ meta: [{ title: "Connect Outlook — Unemploymente" }, { name: "description", content: "Track every job application in one place. Position, company, status, deadline, required skills and interview progress, plus analytics on the skills you lack. Add jobs from a screenshot or your Gmail inbox, then track position, company, status, deadline, skills needed and every interview stage." }, { property: "og:title", content: "Connect Outlook — Unemploymente" }, { property: "og:description", content: "Track every job application in one place. Position, company, status, deadline, required skills and interview progress, plus analytics on the skills you lack. Add jobs from a screenshot or your Gmail inbox, then track position, company, status, deadline, skills needed and every interview stage." }, { property: "og:type", content: "website" }, { name: "twitter:card", content: "summary" }] }),
   component: OAuthReturn,
 });
 

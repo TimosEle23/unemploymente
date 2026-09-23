@@ -15,16 +15,17 @@ import { emptyExtraction, type Application, type ExtractedJob } from "@/lib/jobh
 export const Route = createFileRoute("/add")({
   head: () => ({
     meta: [
-      { title: "Add job — JOBHUNT" },
+      { title: "Add job — Unemploymente" },
       {
         name: "description",
         content:
-          "Add an AI / ML job to JOBHUNT by uploading job advertisement screenshots for AI extraction, or by entering the details manually.",
+          "Track every job application in one place. Position, company, status, deadline, required skills and interview progress, plus analytics on the skills you lack. Add jobs from a screenshot or your Gmail inbox, then track position, company, status, deadline, skills needed and every interview stage.",
       },
-      { property: "og:title", content: "Add job — JOBHUNT" },
+      { property: "og:title", content: "Add job — Unemploymente" },
       {
         property: "og:description",
-        content: "Upload job screenshots and let AI extract structured job data, or enter it manually.",
+        content:
+          "Track every job application in one place. Position, company, status, deadline, required skills and interview progress, plus analytics on the skills you lack. Add jobs from a screenshot or your Gmail inbox, then track position, company, status, deadline, skills needed and every interview stage.",
       },
     ],
   }),

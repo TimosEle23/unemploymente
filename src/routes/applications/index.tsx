@@ -20,15 +20,17 @@ import { cn } from "@/lib/utils";
 export const Route = createFileRoute("/applications/")({
   head: () => ({
     meta: [
-      { title: "Applications — JOBHUNT" },
+      { title: "Applications — Unemploymente" },
       {
         name: "description",
-        content: "Search, filter and manage every AI / ML job application in list or kanban view.",
+        content:
+          "Track every job application in one place. Position, company, status, deadline, required skills and interview progress, plus analytics on the skills you lack. Add jobs from a screenshot or your Gmail inbox, then track position, company, status, deadline, skills needed and every interview stage.",
       },
-      { property: "og:title", content: "Applications — JOBHUNT" },
+      { property: "og:title", content: "Applications — Unemploymente" },
       {
         property: "og:description",
-        content: "All your AI and Machine Learning job applications with search, filters and kanban board.",
+        content:
+          "Track every job application in one place. Position, company, status, deadline, required skills and interview progress, plus analytics on the skills you lack. Add jobs from a screenshot or your Gmail inbox, then track position, company, status, deadline, skills needed and every interview stage.",
       },
     ],
   }),
