@@ -113,8 +113,16 @@ export function Shell({ children }: { children: ReactNode }) {
               />
               <span className="hidden sm:inline">INVITE FRIENDS</span>
             </RetroButton>
-            <RetroButton variant="primary" onClick={() => navigate({ to: "/add" })}>
-              <Plus className="h-3 w-3" /> ADD JOB
+            <RetroButton
+              variant="primary"
+              size="sm"
+              onClick={() => navigate({ to: "/add" })}
+              aria-label="Add job"
+              title="Add job"
+              className="gap-1.5"
+            >
+              <Plus className="h-3.5 w-3.5" />
+              <span className="hidden sm:inline">ADD JOB</span>
             </RetroButton>
             {user ? (
               <>
