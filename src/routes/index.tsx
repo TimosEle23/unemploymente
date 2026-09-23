@@ -9,13 +9,13 @@ import { ACTIVE_STATUSES, INTERVIEW_STATUSES, type Application } from "@/lib/job
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "Dashboard — JOBHUNT" },
+      { title: "JOBHUNT" },
       {
         name: "description",
         content:
           "JOBHUNT dashboard: AI and Machine Learning job application statistics, upcoming actions and active applications.",
       },
-      { property: "og:title", content: "Dashboard — JOBHUNT" },
+      { property: "og:title", content: "JOBHUNT" },
       {
         property: "og:description",
         content: "Your AI / ML job hunting command center: stats, upcoming actions, active applications.",
@@ -121,9 +121,7 @@ function Dashboard() {
               {upcoming.map((app) => (
                 <li key={app.id} className="flex flex-wrap items-center justify-between gap-2 py-2">
                   <div>
-                    <span className="pixel-text text-[8px] text-ok">
-                      {dayLabel(app.next_action_date!)}
-                    </span>
+                    <span className="pixel-text text-[8px] text-ok">{dayLabel(app.next_action_date!)}</span>
                     <p className="font-mono text-[13px] text-foreground">
                       {app.next_action} — {app.company}
                     </p>
@@ -150,8 +148,7 @@ function Dashboard() {
             </div>
           ) : (
             <EmptyState>
-              Nothing active yet. Use ADD JOB to upload a job screenshot, or load the example data in
-              SETTINGS.
+              Nothing active yet. Use ADD JOB to upload a job screenshot, or load the example data in SETTINGS.
             </EmptyState>
           )}
         </Panel>
@@ -173,7 +170,9 @@ function Dashboard() {
               <ul className="space-y-2">
                 {skillsInDemand.map(([skill, count]) => (
                   <li key={skill} className="flex items-start gap-2">
-                    <span className="flex-1 min-w-0 break-words font-mono text-[12px] text-foreground leading-tight">{skill}</span>
+                    <span className="flex-1 min-w-0 break-words font-mono text-[12px] text-foreground leading-tight">
+                      {skill}
+                    </span>
                     <span className="h-3 shrink-0 bg-ok mt-0.5" style={{ width: `${Math.min(count * 28, 220)}px` }} />
                     <Tag>{count}</Tag>
                   </li>
