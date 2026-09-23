@@ -252,10 +252,28 @@ function InboxImportPage() {
                         <p className="mt-1 break-words font-mono text-[11px] leading-5 text-muted-foreground">{item.sender_email || "UNKNOWN SENDER"}{item.received_at ? ` · ${new Date(item.received_at).toLocaleDateString()}` : ""}</p>
                       </div>
                       <div className="flex flex-wrap gap-2">
-                        <RetroButton size="sm" variant="primary" onClick={() => setEditing({ item, draft: toReviewDraft(item) })}>REVIEW</RetroButton>
+                        <RetroButton size="sm" variant="primary" onClick={() => { setEditing({ item, draft: toReviewDraft(item) }); window.setTimeout(() => document.getElementById(`review-${item.id}`)?.scrollIntoView({ behavior: "smooth", block: "start" }), 50); }}>REVIEW</RetroButton>
                         <RetroButton size="sm" variant="ghost" onClick={() => dismiss(item)}>DISMISS</RetroButton>
                       </div>
                     </div>
+                    {editing?.item.id === item.id ? (
+                      <div id={`review-${item.id}`} className="mt-4 space-y-4 border-t-2 border-foreground pt-5">
+                        <p className="break-words font-sans text-[13px] leading-6 text-muted-foreground">Source: {editing.item.message_subject || "Email without subject"}. Correct any missing or inaccurate detail before saving.</p>
+                        {duplicateMatches.length ? (
+                          <Panel title="POSSIBLE DUPLICATE">
+                            <div className="space-y-2">
+                              {duplicateMatches.map((app) => <Link key={app.id} to="/applications/$id" params={{ id: app.id }} className="flex flex-wrap items-center justify-between gap-2 border border-border p-2 font-mono text-[12px] text-foreground"><span>{app.job_title} — {app.company}</span><span className="pixel-text text-[8px] text-ok">OPEN EXISTING</span></Link>)}
+                            </div>
+                          </Panel>
+                        ) : null}
+                        <ReviewForm draft={editing.draft} onChange={(draft) => setEditing({ ...editing, draft })} missingFields={editing.item.missing_fields} />
+                        <div className="flex flex-wrap gap-2">
+                          <RetroButton variant="ok" onClick={save} disabled={busy !== null || duplicateMatches.length > 0}>{busy === `save-${editing.item.id}` ? "SAVING…" : "SAVE APPLICATION"}</RetroButton>
+                          <RetroButton onClick={() => setEditing(null)} disabled={busy !== null}>CANCEL</RetroButton>
+                          <RetroButton variant="bad" onClick={() => dismiss(editing.item)} disabled={busy !== null}>DISMISS EMAIL</RetroButton>
+                        </div>
+                      </div>
+                    ) : null}
                   </article>
                 );
               })}
@@ -263,26 +281,6 @@ function InboxImportPage() {
           ) : <EmptyState>NO EMAILS WAITING FOR REVIEW.</EmptyState>}
         </Panel>
 
-        {editing ? (
-          <div className="space-y-4 border-t-2 border-foreground pt-5">
-            <Panel title="REVIEW EMAIL EXTRACTION">
-              <p className="break-words font-sans text-[13px] leading-6 text-muted-foreground">Source: {editing.item.message_subject || "Email without subject"}. Correct any missing or inaccurate detail before saving.</p>
-            </Panel>
-            {duplicateMatches.length ? (
-              <Panel title="POSSIBLE DUPLICATE">
-                <div className="space-y-2">
-                  {duplicateMatches.map((app) => <Link key={app.id} to="/applications/$id" params={{ id: app.id }} className="flex flex-wrap items-center justify-between gap-2 border border-border p-2 font-mono text-[12px] text-foreground"><span>{app.job_title} — {app.company}</span><span className="pixel-text text-[8px] text-ok">OPEN EXISTING</span></Link>)}
-                </div>
-              </Panel>
-            ) : null}
-            <ReviewForm draft={editing.draft} onChange={(draft) => setEditing({ ...editing, draft })} missingFields={editing.item.missing_fields} />
-            <div className="flex flex-wrap gap-2">
-              <RetroButton variant="ok" onClick={save} disabled={busy !== null || duplicateMatches.length > 0}>{busy === `save-${editing.item.id}` ? "SAVING…" : "SAVE APPLICATION"}</RetroButton>
-              <RetroButton onClick={() => setEditing(null)} disabled={busy !== null}>CANCEL</RetroButton>
-              <RetroButton variant="bad" onClick={() => dismiss(editing.item)} disabled={busy !== null}>DISMISS EMAIL</RetroButton>
-            </div>
-          </div>
-        ) : null}
       </div>
     </Shell>
   );
