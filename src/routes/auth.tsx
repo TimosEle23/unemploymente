@@ -72,7 +72,7 @@ function AuthPage() {
           <img src={unemploymenteLogo} alt="Unemploymente" className="mx-auto mb-4 h-24 w-20 object-contain" />
           <h1 className="pixel-text text-[22px] text-foreground">JOBHUNT</h1>
           <p className="pixel-text pt-2 text-[8px] text-muted-foreground">
-            AI / ML APPLICATION TRACKER
+            APPLICATION TRACKER
           </p>
         </div>
         <form onSubmit={submit} className="panel space-y-3 p-4">
