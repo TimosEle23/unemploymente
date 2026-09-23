@@ -11,7 +11,7 @@ import { useAuth } from "@/lib/auth";
 import { useApplications } from "@/lib/jobhunt/hooks";
 import { addEvent, createApplication, dismissEmailImportDraft, fetchEmailImportDrafts, findDuplicates, markEmailImportDraftSaved } from "@/lib/jobhunt/api";
 import { completeInboxConnection, disconnectInbox, getInboxConnectionStatus, scanJobEmails, startInboxConnection } from "@/lib/jobhunt/inbox.functions";
-import { emptyExtraction, type EmailImportDraft } from "@/lib/jobhunt/types";
+import { emptyExtraction, type EmailImportDraft, type Status } from "@/lib/jobhunt/types";
 
 type ConnectorId = "google_mail" | "microsoft_outlook";
 
@@ -56,16 +56,51 @@ function waitForOAuth(popup: Window, connectorId: ConnectorId) {
   });
 }
 
-function toReviewDraft(item: EmailImportDraft): Draft {
+const STAGES: { key: Status; label: string }[] = [
+  { key: "APPLIED", label: "APPLIED" },
+  { key: "HR_INTERVIEW", label: "INTERVIEW" },
+  { key: "OFFER", label: "OFFER" },
+  { key: "REJECTED", label: "REJECTED" },
+];
+
+function guessStage(item: EmailImportDraft): Status {
+  const text = `${item.message_subject ?? ""} ${item.extracted_job?.extra_info ?? ""}`.toLowerCase();
+  if (/unfortunately|not moving forward|rejected|regret|other candidates/.test(text)) return "REJECTED";
+  if (/\boffer\b/.test(text)) return "OFFER";
+  if (/interview|schedule|call with|next step/.test(text)) return "HR_INTERVIEW";
+  return "APPLIED";
+}
+
+function toReviewDraft(item: EmailImportDraft, stage: Status): Draft {
+  const date = (item.received_at ?? new Date().toISOString()).slice(0, 10);
   return {
     ...emptyExtraction(),
     ...item.extracted_job,
-    status: "NEW",
-    applied_at: null,
+    status: stage,
+    applied_at: date,
     next_action: null,
     next_action_date: null,
     notes: item.message_subject ? `Imported from email: ${item.message_subject}` : null,
   };
+}
+
+function StagePath({ value, onChange }: { value: Status; onChange: (s: Status) => void }) {
+  const idx = STAGES.findIndex((s) => s.key === value);
+  return (
+    <div className="mt-3 flex flex-wrap items-center gap-1">
+      {STAGES.map((s, i) => {
+        const active = s.key === value;
+        const passed = value !== "REJECTED" && i < idx && s.key !== "REJECTED";
+        const tone = active ? (s.key === "REJECTED" ? "border-bad bg-bad text-background" : "border-ok bg-ok text-background") : passed ? "border-ok text-ok" : "border-border text-muted-foreground";
+        return (
+          <div key={s.key} className="flex items-center gap-1">
+            {i > 0 ? <span className="text-muted-foreground">›</span> : null}
+            <button type="button" onClick={() => onChange(s.key)} className={`pixel-text border-2 px-2 py-1 text-[8px] ${tone}`}>{s.label}</button>
+          </div>
+        );
+      })}
+    </div>
+  );
 }
 
 function InboxImportPage() {
@@ -76,6 +111,9 @@ function InboxImportPage() {
   const [days, setDays] = useState(30);
   const [busy, setBusy] = useState<string | null>(null);
   const [editing, setEditing] = useState<{ item: EmailImportDraft; draft: Draft } | null>(null);
+  const [stages, setStages] = useState<Record<string, Status>>({});
+  const stageOf = (item: EmailImportDraft) => stages[item.id] ?? guessStage(item);
+  const setStage = (item: EmailImportDraft, s: Status) => { setStages((m) => ({ ...m, [item.id]: s })); if (editing?.item.id === item.id) setEditing({ ...editing, draft: { ...editing.draft, status: s } }); };
 
   const statusFn = useServerFn(getInboxConnectionStatus);
   const startFn = useServerFn(startInboxConnection);
@@ -250,9 +288,10 @@ function InboxImportPage() {
                         <h2 className="mt-3 break-words font-sans text-[17px] font-semibold leading-6 text-foreground">{job.job_title || "TITLE NEEDS REVIEW"}</h2>
                         <p className="mt-1 break-words font-mono text-[12px] leading-5 text-muted-foreground">{job.company || "COMPANY NEEDS REVIEW"} · {item.message_subject || "NO SUBJECT"}</p>
                         <p className="mt-1 break-words font-mono text-[11px] leading-5 text-muted-foreground">{item.sender_email || "UNKNOWN SENDER"}{item.received_at ? ` · ${new Date(item.received_at).toLocaleDateString()}` : ""}</p>
+                        <StagePath value={stageOf(item)} onChange={(s) => setStage(item, s)} />
                       </div>
                       <div className="flex flex-wrap gap-2">
-                        <RetroButton size="sm" variant="primary" onClick={() => { setEditing({ item, draft: toReviewDraft(item) }); window.setTimeout(() => document.getElementById(`review-${item.id}`)?.scrollIntoView({ behavior: "smooth", block: "start" }), 50); }}>REVIEW</RetroButton>
+                        <RetroButton size="sm" variant="primary" onClick={() => { setEditing({ item, draft: toReviewDraft(item, stageOf(item)) }); window.setTimeout(() => document.getElementById(`review-${item.id}`)?.scrollIntoView({ behavior: "smooth", block: "start" }), 50); }}>REVIEW</RetroButton>
                         <RetroButton size="sm" variant="ghost" onClick={() => dismiss(item)}>DISMISS</RetroButton>
                       </div>
                     </div>
