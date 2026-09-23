@@ -61,9 +61,9 @@ export function Shell({ children }: { children: ReactNode }) {
 
   async function shareJobhunt() {
     const shareData = {
-      title: "JOBHUNT",
-      text: "Track AI and ML job applications with JOBHUNT.",
-      url: window.location.origin,
+      title: "Unemploymente",
+      text: "Track every job application in one place. Position, company, status, deadline, required skills and interview progress, plus analytics on the skills you lack. Add jobs from a screenshot or your Gmail inbox, then track position, company, status, deadline, skills needed and every interview stage.",
+      url: "https://unemploymente.com",
     };
 
     if (navigator.share) {

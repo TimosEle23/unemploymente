@@ -22,7 +22,25 @@ export const Route = createFileRoute("/")({
         content:
           "Track every job application in one place. Position, company, status, deadline, required skills and interview progress, plus analytics on the skills you lack. Add jobs from a screenshot or your Gmail inbox, then track position, company, status, deadline, skills needed and every interview stage.",
       },
+      { property: "og:type", content: "website" },
+      { property: "og:url", content: "https://unemploymente.com" },
+      {
+        property: "og:image",
+        content: "https://unemploymente.com/unemploymente-share.jpg",
+      },
+      { name: "twitter:card", content: "summary_large_image" },
+      { name: "twitter:title", content: "Unemploymente" },
+      {
+        name: "twitter:description",
+        content:
+          "Track every job application in one place. Position, company, status, deadline, required skills and interview progress, plus analytics on the skills you lack. Add jobs from a screenshot or your Gmail inbox, then track position, company, status, deadline, skills needed and every interview stage.",
+      },
+      {
+        name: "twitter:image",
+        content: "https://unemploymente.com/unemploymente-share.jpg",
+      },
     ],
+    links: [{ rel: "canonical", href: "https://unemploymente.com" }],
   }),
   component: Dashboard,
 });
