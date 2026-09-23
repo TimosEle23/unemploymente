@@ -16,6 +16,7 @@ import { emptyExtraction, type EmailImportDraft } from "@/lib/jobhunt/types";
 type ConnectorId = "google_mail" | "microsoft_outlook";
 
 export const Route = createFileRoute("/inbox-import")({
+  staticData: { sitemap: false },
   head: () => ({
     meta: [
       { title: "Inbox import — Unemploymente" },

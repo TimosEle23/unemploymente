@@ -8,6 +8,7 @@ import { Field, RetroButton, inputClass } from "@/components/jobhunt/ui";
 import unemploymenteLogo from "@/assets/unemploymente-logo.png";
 
 export const Route = createFileRoute("/auth")({
+  staticData: { sitemap: false },
   head: () => ({
     meta: [
       { title: "Sign in — Unemploymente" },

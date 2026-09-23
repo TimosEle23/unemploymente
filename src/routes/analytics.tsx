@@ -7,6 +7,7 @@ import { buildMatchReport } from "@/lib/jobhunt/match";
 import { INTERVIEW_STATUSES, STATUS_LABEL, STATUSES, type Application } from "@/lib/jobhunt/types";
 
 export const Route = createFileRoute("/analytics")({
+  staticData: { sitemap: false },
   head: () => ({
     meta: [
       { title: "Analytics — Unemploymente" },

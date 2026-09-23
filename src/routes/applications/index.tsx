@@ -18,6 +18,7 @@ import {
 import { cn } from "@/lib/utils";
 
 export const Route = createFileRoute("/applications/")({
+  staticData: { sitemap: false },
   head: () => ({
     meta: [
       { title: "Applications — Unemploymente" },

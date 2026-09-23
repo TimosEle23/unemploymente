@@ -13,6 +13,7 @@ import { useAuth } from "@/lib/auth";
 import { emptyExtraction, type Application, type ExtractedJob } from "@/lib/jobhunt/types";
 
 export const Route = createFileRoute("/add")({
+  staticData: { sitemap: false },
   head: () => ({
     meta: [
       { title: "Add job — Unemploymente" },
