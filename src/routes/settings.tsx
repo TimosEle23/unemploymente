@@ -7,9 +7,8 @@ import { Shell } from "@/components/jobhunt/Shell";
 import { Field, Panel, RetroButton, Tag, inputClass } from "@/components/jobhunt/ui";
 import { CvSection } from "@/components/jobhunt/CvSections";
 import { useApplications, useProfile } from "@/lib/jobhunt/hooks";
-import { deleteSeedApplications, downloadLatestCv, removeLatestCv, updateProfile, uploadLatestCv } from "@/lib/jobhunt/api";
+import { downloadLatestCv, removeLatestCv, updateProfile, uploadLatestCv } from "@/lib/jobhunt/api";
 import { extractCvSections } from "@/lib/jobhunt/cv.functions";
-import { insertSeedData } from "@/lib/jobhunt/seed";
 import { useAuth } from "@/lib/auth";
 import { Download, FileText, ScanText, Trash2, Upload } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
@@ -62,7 +61,6 @@ function SettingsPage() {
 
   useEffect(() => setAccountEmail(user?.email ?? ""), [user?.email]);
 
-  const seedCount = apps.filter((app) => app.is_seed).length;
 
   async function save() {
     if (!user) return;
