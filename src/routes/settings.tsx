@@ -9,6 +9,7 @@ import { CvSection } from "@/components/jobhunt/CvSections";
 import { useProfile } from "@/lib/jobhunt/hooks";
 import { downloadLatestCv, removeLatestCv, updateProfile, uploadLatestCv } from "@/lib/jobhunt/api";
 import { extractCvSections } from "@/lib/jobhunt/cv.functions";
+import { deleteMyAccount, exportMyData } from "@/lib/jobhunt/account.functions";
 import { useAuth } from "@/lib/auth";
 import { Download, FileText, ScanText, Trash2, Upload } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
@@ -51,6 +52,44 @@ function SettingsPage() {
   const [reading, setReading] = useState(false);
   const cvInput = useRef<HTMLInputElement>(null);
   const readCv = useServerFn(extractCvSections);
+  const runExport = useServerFn(exportMyData);
+  const runDelete = useServerFn(deleteMyAccount);
+  const [deleteConfirm, setDeleteConfirm] = useState("");
+
+  async function exportData() {
+    setBusy(true);
+    try {
+      const data = await runExport();
+      const blob = new Blob([JSON.stringify(data, null, 2)], { type: "application/json" });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = `unemploymente-export-${new Date().toISOString().slice(0, 10)}.json`;
+      link.click();
+      URL.revokeObjectURL(url);
+      toast.success("Your data was downloaded");
+    } catch (error) {
+      toast.error(error instanceof Error ? error.message : "Export failed");
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  async function deleteAccount() {
+    if (deleteConfirm !== "DELETE") return;
+    setBusy(true);
+    try {
+      await runDelete({ data: { confirm: "DELETE" } });
+      queryClient.clear();
+      await supabase.auth.signOut();
+      toast.success("Your account was deleted");
+      window.location.href = "/auth";
+    } catch (error) {
+      toast.error(error instanceof Error ? error.message : "Account deletion failed");
+      setBusy(false);
+    }
+  }
+
 
 
   useEffect(() => {
@@ -283,6 +322,22 @@ function SettingsPage() {
               <div className="sm:col-span-3"><RetroButton variant="ok" onClick={changePassword} disabled={busy || !currentPassword || !newPassword || !confirmPassword}>UPDATE PASSWORD</RetroButton></div>
             </div>
           )}
+        </Panel>
+
+        <Panel title="YOUR DATA">
+          <div className="grid gap-4">
+            <div className="flex flex-wrap items-center gap-3">
+              <RetroButton onClick={exportData} disabled={busy}>EXPORT MY DATA</RetroButton>
+              <p className="font-sans text-[13px] text-muted-foreground">Download everything saved in your account as a file.</p>
+            </div>
+            <div className="grid gap-2 border-t border-border pt-4">
+              <p className="font-sans text-[13px] text-muted-foreground">Delete your account permanently, including applications, notes, screenshots, your CV and inbox connections. This cannot be undone. Type DELETE to confirm.</p>
+              <div className="flex flex-wrap items-center gap-3">
+                <input className={`${inputClass} max-w-[200px]`} value={deleteConfirm} onChange={(event) => setDeleteConfirm(event.target.value)} placeholder="DELETE" aria-label="Type DELETE to confirm" />
+                <RetroButton variant="bad" onClick={deleteAccount} disabled={busy || deleteConfirm !== "DELETE"}>DELETE MY ACCOUNT</RetroButton>
+              </div>
+            </div>
+          </div>
         </Panel>
 
       </div>
