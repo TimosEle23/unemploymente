@@ -122,7 +122,7 @@ export function Shell({ children }: { children: ReactNode }) {
               className="gap-1.5"
             >
               <Plus className="h-3.5 w-3.5" />
-              <span className="hidden sm:inline">ADD JOB</span>
+              <span>ADD JOB</span>
             </RetroButton>
             {user ? (
               <>
