@@ -238,7 +238,7 @@ export function Shell({ children }: { children: ReactNode }) {
         <p className="pixel-text text-[8px] text-muted-foreground">
           JOBHUNT // PERSONAL JOB HUNTING SYSTEM
         </p>
-        <p className="pixel-text mt-1 text-[8px] text-muted-foreground">
+        <p className="pixel-text mt-1 text-center text-[8px] text-muted-foreground">
           TE23 2026
         </p>
       </footer>
