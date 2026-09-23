@@ -16,6 +16,7 @@ import { Route as AuthRouteImport } from './routes/auth'
 import { Route as InboxImportRouteImport } from './routes/inbox-import'
 import { Route as InterviewsRouteImport } from './routes/interviews'
 import { Route as SettingsRouteImport } from './routes/settings'
+import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as ApplicationsIndexRouteImport } from './routes/applications/index'
 import { Route as ApplicationsIdRouteImport } from './routes/applications/$id'
 import { Route as OauthGoogle_mailReturnRouteImport } from './routes/oauth/google_mail/return'
@@ -56,6 +57,11 @@ const SettingsRoute = SettingsRouteImport.update({
   path: '/settings',
   getParentRoute: () => rootRouteImport,
 } as any)
+const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
+  id: '/sitemap.xml',
+  path: '/sitemap.xml',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApplicationsIndexRoute = ApplicationsIndexRouteImport.update({
   id: '/applications/',
   path: '/applications/',
@@ -86,6 +92,7 @@ export interface FileRoutesByFullPath {
   '/inbox-import': typeof InboxImportRoute
   '/interviews': typeof InterviewsRoute
   '/settings': typeof SettingsRoute
+  '/sitemap.xml': typeof SitemapDotxmlRoute
   '/applications/$id': typeof ApplicationsIdRoute
   '/applications/': typeof ApplicationsIndexRoute
   '/oauth/google_mail/return': typeof OauthGoogle_mailReturnRoute
@@ -99,6 +106,7 @@ export interface FileRoutesByTo {
   '/inbox-import': typeof InboxImportRoute
   '/interviews': typeof InterviewsRoute
   '/settings': typeof SettingsRoute
+  '/sitemap.xml': typeof SitemapDotxmlRoute
   '/applications/$id': typeof ApplicationsIdRoute
   '/applications': typeof ApplicationsIndexRoute
   '/oauth/google_mail/return': typeof OauthGoogle_mailReturnRoute
@@ -113,6 +121,7 @@ export interface FileRoutesById {
   '/inbox-import': typeof InboxImportRoute
   '/interviews': typeof InterviewsRoute
   '/settings': typeof SettingsRoute
+  '/sitemap.xml': typeof SitemapDotxmlRoute
   '/applications/$id': typeof ApplicationsIdRoute
   '/applications/': typeof ApplicationsIndexRoute
   '/oauth/google_mail/return': typeof OauthGoogle_mailReturnRoute
@@ -128,6 +137,7 @@ export interface FileRouteTypes {
     | '/inbox-import'
     | '/interviews'
     | '/settings'
+    | '/sitemap.xml'
     | '/applications/$id'
     | '/applications/'
     | '/oauth/google_mail/return'
@@ -141,6 +151,7 @@ export interface FileRouteTypes {
     | '/inbox-import'
     | '/interviews'
     | '/settings'
+    | '/sitemap.xml'
     | '/applications/$id'
     | '/applications'
     | '/oauth/google_mail/return'
@@ -154,6 +165,7 @@ export interface FileRouteTypes {
     | '/inbox-import'
     | '/interviews'
     | '/settings'
+    | '/sitemap.xml'
     | '/applications/$id'
     | '/applications/'
     | '/oauth/google_mail/return'
@@ -168,6 +180,7 @@ export interface RootRouteChildren {
   InboxImportRoute: typeof InboxImportRoute
   InterviewsRoute: typeof InterviewsRoute
   SettingsRoute: typeof SettingsRoute
+  SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   ApplicationsIdRoute: typeof ApplicationsIdRoute
   ApplicationsIndexRoute: typeof ApplicationsIndexRoute
   OauthGoogle_mailReturnRoute: typeof OauthGoogle_mailReturnRoute
@@ -225,6 +238,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof SettingsRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/sitemap.xml': {
+      id: '/sitemap.xml'
+      path: '/sitemap.xml'
+      fullPath: '/sitemap.xml'
+      preLoaderRoute: typeof SitemapDotxmlRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/applications/': {
       id: '/applications/'
       path: '/applications'
@@ -264,6 +284,7 @@ const rootRouteChildren: RootRouteChildren = {
   InboxImportRoute: InboxImportRoute,
   InterviewsRoute: InterviewsRoute,
   SettingsRoute: SettingsRoute,
+  SitemapDotxmlRoute: SitemapDotxmlRoute,
   ApplicationsIdRoute: ApplicationsIdRoute,
   ApplicationsIndexRoute: ApplicationsIndexRoute,
   OauthGoogle_mailReturnRoute: OauthGoogle_mailReturnRoute,
