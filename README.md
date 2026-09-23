@@ -1,734 +1,165 @@
-# Job Hunt Console
+# Unemploymente — AI Job Application Tracker
 
-Build a full responsive web application called JOBHUNT for tracking my AI and Machine Learning job applications.
+**Live app:** [unemploymente.com](https://unemploymente.com)
 
-The website is a personal job application management dashboard. I am a Computer Engineer with a BSc in Computer Engineering and an MSc in Artificial Intelligence, currently looking for AI Engineer, Machine Learning Engineer, Data Scientist, Applied AI and related technical roles.
+A personal job-hunting command center for AI/ML and technical roles. Instead of typing job details into a spreadsheet, you upload screenshots of a job ad (or connect your inbox) and the system reads them, extracts every field, and files a structured application record you can track end to end.
 
-The application should feel like a personal job hunting command center rather than a generic CRM.
+Built and maintained by **Timos Eleftheriou** (TE23, 2026).
 
-1. Visual design
+---
 
-Use a dark retro computer interface inspired by classic Atari and early computer systems.
+## Why it exists
 
-Main background:
-Very dark charcoal / black grey.
+Job hunting in AI/ML means high application volume, long job descriptions, and scattered sources (LinkedIn, Indeed, company career pages, recruiter emails). Generic CRMs don't fit: they require manual data entry and don't compare a posting against your actual skills.
 
-Use:
-Black
-Dark grey
-Grey
-Off white
-White
-Muted green
-Muted red
+This app solves three concrete problems:
 
-Avoid modern gradients, glassmorphism, excessive rounded cards, neon cyberpunk styling or overly polished SaaS aesthetics.
+1. **Data entry is the bottleneck** → AI reads job ads from screenshots and fills the record.
+2. **Context gets lost** → every application keeps its description, requirements, notes, timeline, and original screenshots in one place.
+3. **"Am I a fit?" is guesswork** → a transparent match report shows matched, partial, and missing requirements instead of a meaningless "87% match" score.
 
-The interface should feel like a combination of:
-retro computer terminal
-Atari era UI
-old school job tracking system
-modern professional dashboard
+---
 
-Typography should have a pixel / retro computer feeling, especially for:
-navigation
-section titles
-status labels
-buttons
-small metadata
+## Technology stack
 
-Use a readable modern font for longer descriptions and extracted job information if necessary, while keeping the navigation and UI labels retro styled.
+| Layer | Choice | Why |
+|---|---|---|
+| Framework | TanStack Start v1 (React 19, SSR) | File-based routing, type-safe server functions, edge-ready |
+| Build tool | Vite 7 | Fast HMR, modern bundling |
+| Language | TypeScript (strict, ~97% of the codebase) | End-to-end type safety from database row to UI prop |
+| Styling | Tailwind CSS v4 with a custom token theme | Retro terminal design system, no ad-hoc colors |
+| Database | PostgreSQL (Lovable Cloud / Supabase) | Relational integrity, row-level security, SQL migrations |
+| Auth | Email/password + Google OAuth 2.0, JWT sessions | Standard, multi-user ready |
+| File storage | Private buckets with signed URLs | Screenshots and CVs are never publicly reachable |
+| AI | Server-side gateway calls with strict JSON schemas | Structured output, no keys in the browser |
 
-Use subtle pixel borders, hard shadows and square or slightly rounded components.
+---
 
-Do not make everything excessively pixelated. The application must remain professional and usable.
+## Architecture at a glance
 
-2. Main dashboard
+```text
+Browser (React 19 + Tailwind v4)
+  │  type-safe RPC (createServerFn)
+  ▼
+Server functions (edge runtime)
+  ├── screenshot extraction  → AI gateway (vision + OCR, strict JSON schema)
+  ├── CV section extraction  → AI gateway (PDF parsing)
+  ├── Gmail inbox scan       → OAuth connector gateway → AI classification
+  ▼
+PostgreSQL  +  private object storage
+  Row-Level Security on every table (users only ever see their own rows)
+```
 
-The homepage should be the job application dashboard.
+Design rules enforced across the codebase:
 
-At the top display:
+- **No secrets client-side.** All AI and provider credentials are read inside server handlers only.
+- **RLS on every table.** Policies scope every row to `auth.uid()`; no table is readable without a policy.
+- **Never invent data.** Every AI prompt is instructed to return `null` for fields not present in the source, and extraction results always pass through a human review screen before saving.
+- **Encrypted third-party tokens.** Inbox connection credentials are stored AES-256-GCM encrypted, server-side only.
+- **SSRF-guarded enrichment.** Outbound link fetches validate the target and refuse redirects.
 
-JOBHUNT
+---
 
-AI / ML APPLICATION TRACKER
+## Data model
 
-Below this, show a compact navigation bar:
+| Table | Purpose |
+|---|---|
+| `profiles` | User identity, headline, education, skills, CV path, parsed CV sections |
+| `applications` | One row per job: title, company, location, salary, arrangement, status, skills, source |
+| `application_events` | Timeline entries (saved, submitted, HR interview, technical interview, offer) |
+| `screenshots` | Original job-ad images attached to their application |
+| `notes` | Free-text notes, interview prep, recruiter context |
+| `followups` | Next action plus next-action date driving reminders |
+| `contacts` | Recruiter and hiring-manager details |
+| `app_user_connections` | Encrypted inbox OAuth credentials (service-role access only) |
+| `email_import_drafts` | Staged candidates from an inbox scan, pending human review |
 
-DASHBOARD
-APPLICATIONS
-ADD JOB
-INTERVIEWS
-ANALYTICS
-SETTINGS
+All tables carry `created_at` / `updated_at` with database triggers.
 
-The main dashboard should contain statistics such as:
+---
 
-TOTAL APPLICATIONS
-SAVED
-APPLIED
-INTERVIEW
-TECHNICAL
-OFFER
-REJECTED
+## Feature walkthrough
 
-Also show:
+### Dashboard
+Pipeline snapshot: totals per status, applications this week and month, upcoming interviews, follow-ups due, and active applications. Sections: **Upcoming Actions** (today/tomorrow), **Active Applications**, **Recently Added**, and **Skills in Demand** — a live frequency chart of the skills appearing most often across your saved jobs.
 
-Applications this week
-Applications this month
-Upcoming interviews
-Follow ups due
-Active applications
+### Add job — screenshot extraction (the core feature)
+Upload one or several screenshots of the same posting. A server function sends them to a vision model with a strict output schema and merges them into a **single** record: title, company, location, work arrangement, employment type, salary and currency, experience and education requirements, required and preferred skills, languages, ML/cloud/framework technologies, responsibilities, benefits, deadline, posting date, job URL, recruiter and contact details, job board. Missing fields stay empty rather than being guessed. An editable review screen — with duplicate detection on company + title + URL — precedes saving. Manual entry uses the identical form.
 
-3. Application status colors
+### Connected inbox import (Gmail)
+The user authorizes read-only Gmail access through an OAuth popup. A scan searches a bounded recent window with job-specific query syntax, classifies each message with AI, enriches public job links when safe, deduplicates by provider message ID, and stages results in a **Review Queue**. Nothing is ever saved automatically — every import is human-approved. Only extracted metadata is persisted, not email bodies.
 
-Every job application must have a clear status.
+### Application detail
+Full record view with an inline-editable job title and a status selector that recolors the record. Sections: job description, responsibilities, requirements, technical skills, preferred skills, education, experience, benefits, my notes, interview notes, follow-up, documents, and the original screenshots.
 
-Use these colors consistently:
+### Timeline and follow-ups
+Manually loggable events per application with dates and notes. Each application carries a next action (apply, follow up, prepare HR/technical interview, thank-you email, contact recruiter, check status) with a date that feeds the dashboard and the in-app notification bell.
 
-GREEN = positive / active progress
+### Applications list and Kanban
+Search across company, title, location, skill, technology, status, and source; filters for status, work arrangement, and date. A Kanban view (Saved → Applied → HR → Technical → Final → Offer → Rejected) supports drag-and-drop, and moving a card writes the new status straight to the database.
 
-GREY = saved, not yet applied, waiting or neutral
+### Match report
+Job requirements are compared against the stored profile with alias and related-skill expansion, producing **matched / partially matched / missing / relevant experience / potential gaps** — a reviewable breakdown, deliberately not a single opaque percentage.
 
-RED = rejected
+### Profile and CV toolkit
+Stores education, skills, and the latest CV (private storage). A server function parses the uploaded PDF and extracts **Work Experience**, **Education**, and **Projects** using only the document's own wording. Every section, entry, bullet line, skill, and technology is click-to-copy — built for pasting into application forms fast. Also includes account email and password management.
 
-WHITE = newly added / needs review
+### Analytics
+Applications per week and month, breakdowns by status, company, location, and role, most-requested skills, most frequently missing skills, interview conversion, and response rate — rendered as simple, readable charts.
 
-Do not use bright neon colors.
+---
 
-Each job card should have a visible status indicator.
+## Design system
 
-Suggested statuses:
+A deliberate dark retro-computer aesthetic: near-black charcoal background, grey panels, off-white text, muted green for positive progress, muted red for rejection, grey for neutral, white for newly added. Square or barely-rounded components, pixel borders, hard shadows, no gradients or decorative animation. Pixel typography (Press Start 2P) for navigation, labels, and buttons; JetBrains Mono for metadata; Inter for long-form text. Responsive from desktop down to mobile, where navigation collapses to a single menu.
 
-SAVED
-APPLIED
-HR INTERVIEW
-TECHNICAL INTERVIEW
-FINAL INTERVIEW
-OFFER
-REJECTED
-WITHDRAWN
+---
 
-Allow the user to change the status easily.
+## Running locally
 
-The card should visually change according to the status.
-
-4. Add job through screenshot upload
-
-The most important feature is an UPLOAD JOB SCREENSHOT button.
-
-I should be able to upload one or multiple screenshots containing a job advertisement.
-
-The system should use AI / OCR to analyze the uploaded image and extract all useful information from the job advertisement.
-
-For example, if I upload screenshots from LinkedIn, Indeed, company career pages or other job boards, the application should identify and extract:
-
-Job title
-Company
-Location
-Remote / hybrid / onsite
-Employment type
-Salary
-Currency
-Required experience
-Education requirements
-Required technical skills
-Preferred technical skills
-Programming languages
-Machine learning technologies
-Cloud technologies
-Frameworks
-Responsibilities
-Requirements
-Qualifications
-Benefits
-Application deadline
-Job posting date
-Job URL if visible
-Recruiter information if visible
-Contact information if visible
-Job board
-Any other relevant information visible in the screenshots
-
-If multiple screenshots belong to the same job, combine the information into one application rather than creating duplicate jobs.
-
-After extraction, show a REVIEW SCREEN before saving.
-
-The extracted information must be editable.
-
-Example:
-
-JOB TITLE
-Machine Learning Engineer
-
-COMPANY
-Example Company
-
-LOCATION
-Amsterdam, Netherlands
-
-WORK TYPE
-Hybrid
-
-SALARY
-€45,000 to €60,000
-
-REQUIRED SKILLS
-Python
-PyTorch
-Machine Learning
-SQL
-Docker
-
-PREFERRED SKILLS
-AWS
-Kubernetes
-MLOps
-
-Then provide:
-
-SAVE APPLICATION
-
-The user must be able to correct anything the AI extracted before saving.
-
-5. Job application card
-
-Each application should appear as a compact but information rich card.
-
-Example:
-
-MACHINE LEARNING ENGINEER
-
-Company Name
-
-Amsterdam, Netherlands
-Hybrid
-
-STATUS: APPLIED
-
-Applied: 18 September 2026
-
-Skills:
-Python
-PyTorch
-Docker
-SQL
-AWS
-
-SOURCE:
-LinkedIn
-
-NEXT ACTION:
-Follow up with recruiter
-
-Clicking the card should open the complete application page.
-
-6. Application detail page
-
-Each job should have its own detailed page.
-
-Display:
-
-Job title
-Company
-Location
-Salary
-Employment type
-Work arrangement
-Job URL
-Source
-Date added
-Application date
-Current status
-Recruiter
-Contact information
-
-Then sections:
-
-JOB DESCRIPTION
-
-RESPONSIBILITIES
-
-REQUIREMENTS
-
-TECHNICAL SKILLS
-
-PREFERRED SKILLS
-
-EDUCATION
-
-EXPERIENCE
-
-BENEFITS
-
-MY NOTES
-
-INTERVIEW NOTES
-
-FOLLOW UP
-
-DOCUMENTS
-
-SCREENSHOTS
-
-The original uploaded screenshots should remain attached to the application so I can refer back to the original job advertisement.
-
-7. Application timeline
-
-Every application should have a timeline.
-
-Example:
-
-18 SEP
-JOB SAVED
-
-19 SEP
-APPLICATION SUBMITTED
-
-22 SEP
-HR INTERVIEW
-
-26 SEP
-TECHNICAL INTERVIEW
-
-The user should be able to manually add timeline events.
-
-Each event should have:
-
-Date
-Event type
-Notes
-
-8. Follow up system
-
-Each application should have a next action.
-
-Examples:
-
-Apply
-Follow up
-Prepare HR interview
-Prepare technical interview
-Send thank you email
-Contact recruiter
-Check application status
-
-Allow me to assign:
-
-NEXT ACTION DATE
-
-The dashboard should show upcoming actions.
-
-For example:
-
-TODAY
-Follow up with Company A
-
-TOMORROW
-Prepare technical interview for Company B
-
-FRIDAY
-Send recruiter message to Company C
-
-9. Search and filtering
-
-Add a powerful search bar.
-
-I should be able to search by:
-
-Company
-Job title
-Location
-Skill
-Technology
-Status
-Source
-
-Add filters:
-
-ALL
-SAVED
-APPLIED
-INTERVIEW
-OFFER
-REJECTED
-
-Also allow filtering by:
-
-Remote
-Hybrid
-Onsite
-
-and by date.
-
-10. Job matching
-
-Add a section called:
-
-MY PROFILE
-
-Store my professional profile:
-
-BSc Computer Engineering
-MSc Artificial Intelligence
-
-Technical skills:
-
-Python
-PyTorch
-TensorFlow
-scikit-learn
-NumPy
-pandas
-Machine Learning
-Deep Learning
-NLP
-Reinforcement Learning
-Computer Engineering
-Data Mining
-Time Series
-AI
-
-The application should compare the extracted job requirements against my profile.
-
-For every job show:
-
-MATCHED SKILLS
-
-MISSING SKILLS
-
-RELEVANT EXPERIENCE
-
-POTENTIAL GAPS
-
-IMPORTANT:
-
-Do not give a simplistic overall score such as "87% match".
-
-Instead, show a transparent comparison of the requirements.
-
-Example:
-
-MATCHED
-
-Python
-PyTorch
-Machine Learning
-Deep Learning
-
-MISSING
-
-AWS
-Kubernetes
-
-PARTIALLY MATCHED
-
-MLOps
-
-This should help me decide whether I need to apply or prepare for specific requirements.
-
-11. Application notes
-
-Allow free text notes for every application.
-
-Examples:
-
-Why I want this role
-
-Questions about the company
-
-Recruiter information
-
-Interview preparation
-
-Technical topics to study
-
-Salary discussion
-
-Things to mention during interview
-
-12. Analytics
-
-Create an ANALYTICS page.
-
-Show useful statistics:
-
-Applications per week
-Applications per month
-Applications by status
-Applications by company
-Applications by location
-Applications by role
-Most common required skills
-Skills I am missing most frequently
-Interview conversion
-Application response rate
-
-Use simple retro styled charts.
-
-Do not make the analytics page visually overwhelming.
-
-13. Kanban view
-
-Add an optional Kanban view.
-
-Columns:
-
-SAVED
-APPLIED
-HR
-TECHNICAL
-FINAL
-OFFER
-REJECTED
-
-Job cards should be draggable between columns.
-
-When a card moves to another column, update the application status automatically.
-
-14. Multiple screenshot processing
-
-The upload system should support multiple screenshots at once.
-
-For example:
-
-Screenshot 1 contains the job title and company.
-
-Screenshot 2 contains responsibilities.
-
-Screenshot 3 contains requirements.
-
-The AI should combine all screenshots into one structured job record.
-
-If information is not present, leave the field empty instead of inventing information.
-
-Never hallucinate missing job information.
-
-15. Duplicate detection
-
-Before saving a job, check whether a similar application already exists.
-
-Use combinations such as:
-
-Company
-Job title
-Job URL
-
-If a likely duplicate is detected, display:
-
-POSSIBLE DUPLICATE
-
-This job may already exist in your applications.
-
-Then allow:
-
-OPEN EXISTING
-SAVE ANYWAY
-
-16. Data persistence
-
-All applications must persist between sessions.
-
-Use a proper database and authentication so that my job applications are not lost when I refresh the page.
-
-The application should be designed primarily for one user, but structure the database cleanly so authentication and multiple users can be supported later.
-
-Store:
-
-users
-applications
-application_events
-screenshots
-notes
-skills
-contacts
-followups
-
-Use timestamps for created_at and updated_at.
-
-17. Dashboard layout
-
-The dashboard should prioritize what I need when actively searching for jobs.
-
-Top:
-
-JOBHUNT
-
-Stats row:
-
-TOTAL
-ACTIVE
-INTERVIEWS
-OFFERS
-REJECTED
-
-Then:
-
-UPCOMING ACTIONS
-
-Then:
-
-ACTIVE APPLICATIONS
-
-Then:
-
-RECENTLY ADDED
-
-Then:
-
-SKILLS IN DEMAND
-
-The ADD JOB button should always be clearly visible.
-
-18. Add Job button
-
-Make this the primary action.
-
-Button:
-
-ADD JOB
-
-When clicked, show:
-
-UPLOAD SCREENSHOT
-
-or
-
-ENTER MANUALLY
-
-The manual form should contain the same fields as the AI extraction workflow.
-
-19. AI extraction workflow
-
-The flow should be:
-
-Click ADD JOB
-
-Upload one or multiple screenshots
-
-OCR / AI reads the screenshots
-
-Extract structured information
-
-Detect duplicate jobs
-
-Display extracted information
-
-User reviews and edits
-
-User clicks SAVE
-
-Application appears on dashboard
-
-Original screenshots are stored with the application
-
-The extracted data should be structured rather than stored only as raw text.
-
-20. Responsive design
-
-The application must work well on:
-
-Desktop
-Laptop
-Tablet
-Mobile
-
-Desktop should be the primary experience because I will use it mainly on my laptop.
-
-On mobile, the navigation should collapse into a simple menu.
-
-21. UX principles
-
-Keep the interface fast and direct.
-
-Do not add unnecessary animations.
-
-Do not use excessive rounded cards.
-
-Do not use generic corporate dashboard aesthetics.
-
-Do not use gradients.
-
-Do not use stock images.
-
-Do not add unnecessary decorative elements.
-
-The retro aesthetic should come from typography, borders, spacing, colors and interface structure rather than random pixel art.
-
-The application should feel like a serious personal tool with a retro computer identity.
-
-22. Seed data
-
-Create several realistic example applications so I can immediately understand the interface.
-
-Examples:
-
-Machine Learning Engineer
-AI Engineer
-Data Scientist
-Computer Vision Engineer
-NLP Engineer
-
-Use fictional companies for seed data.
-
-Clearly mark seed data so it can be deleted.
-
-23. Important technical requirement
-
-Build the application so the screenshot extraction functionality is actually connected to an AI / OCR workflow rather than being a fake UI.
-
-If an AI API key or integration is required, create the appropriate secure backend structure and environment variable configuration.
-
-Never expose API keys in frontend code.
-
-For uploaded images, process the image securely and associate the extracted information with the correct application.
-
-24. Final product identity
-
-Application name:
-
-JOBHUNT
-
-Subtitle:
-
-AI / ML APPLICATION TRACKER
-
-Visual identity:
-
-Dark charcoal background
-Grey panels
-White text
-Muted green for active / positive statuses
-Muted red for rejected
-Grey for neutral states
-White for new applications
-Retro computer typography
-Pixel inspired navigation
-Minimal professional layout
-
-The final result should feel like I built my own personal job hunting operating system.
-
-Prioritize the actual job tracking workflow and screenshot to structured data extraction over decorative design.///Now make the screenshot extraction feature functional. When I upload a job advertisement screenshot, use OCR and an LLM vision model to extract the job information into the application's structured database fields. Do not simply save the screenshot or return raw OCR text. Create structured JSON internally, validate the fields, detect missing information, and show me an editable review screen before saving. If a field cannot be identified from the screenshot, return null or leave it empty. Never invent information. Support multiple screenshots belonging to the same job and merge their information before presenting the review screen.
-
-This project was built with [Lovable](https://lovable.dev).
-
-**Live app**: https://unemploymentet.lovable.app
-
-## Build with Lovable
-
-Continue developing this project in the [Lovable editor](https://lovable.dev/projects/08707db9-577a-4748-8833-7f0e5f837a2e).
-
-- **Ship faster**: describe what you want to build and Lovable handles the code.
-- **Stay in sync**: every change made in Lovable is committed straight to this repository.
-- **Full ownership**: this code is yours. Push to `main` on GitHub and your changes sync back into Lovable, ready for your next prompt.
-
-## Development
-
-Prefer working locally? You need Node.js and npm — [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating).
+Requires Node.js 20+ (or Bun).
 
 ```sh
-git clone <this-repository-url>
-cd <repository-name>
-npm i
+git clone https://github.com/TimosEle23/unemploymente.git
+cd unemploymente
+npm install
 npm run dev
 ```
+
+The app starts on `http://localhost:8080`. Backend credentials come from environment variables (`VITE_SUPABASE_URL`, `VITE_SUPABASE_PUBLISHABLE_KEY`); server-only secrets — the AI gateway key, the inbox connector key, and the connection encryption secret — are configured in the hosting environment and never shipped to the browser.
+
+```sh
+npm run build      # production build
+npx tsgo --noEmit  # type check
+```
+
+---
+
+## Project layout
+
+```text
+src/
+  routes/               file-based routes (dashboard, add, applications, analytics,
+                        interviews, profile, inbox import, auth, sitemap, OAuth returns)
+  components/jobhunt/   design-system primitives, job card, review form,
+                        match panel, CV sections, app shell
+  lib/jobhunt/          types, API layer, React Query hooks, match engine,
+                        server functions (extraction, CV parsing, inbox)
+  integrations/         database and connector clients
+  server/               encryption and connection-state helpers
+  styles.css            Tailwind v4 theme tokens and utilities
+supabase/               SQL migrations
+```
+
+---
+
+## Roadmap
+
+- Scheduled background inbox scans
+- Additional mail providers (Outlook, Apple Mail)
+- ATS-API job enrichment (Greenhouse, Lever, Workday)
+- Exportable application reports
+
+---
+
+**TE23 — 2026**
