@@ -87,7 +87,7 @@ export function Shell({ children }: { children: ReactNode }) {
   return (
     <div className="min-h-screen bg-background">
       <header className="border-b-2 border-border bg-panel">
-        <div className="mx-auto flex max-w-7xl flex-wrap items-center justify-between gap-3 px-4 py-3">
+        <div className="mx-auto grid max-w-7xl grid-cols-1 items-center gap-3 px-4 py-3 lg:flex lg:flex-wrap lg:justify-between">
           <Link to="/" className="flex min-w-0 items-center gap-3">
             <img src={unemploymenteLogo} alt="Unemploymente" className="h-12 w-10 shrink-0 object-contain" />
             <div className="min-w-0">
@@ -97,14 +97,14 @@ export function Shell({ children }: { children: ReactNode }) {
               </p>
             </div>
           </Link>
-          <div className="flex items-center gap-2">
+          <div className="grid w-full min-w-0 grid-cols-[minmax(0,1fr)_minmax(0,1fr)_1.75rem_1.75rem_auto] items-center gap-2 md:grid-cols-[minmax(0,1fr)_minmax(0,1fr)_1.75rem_1.75rem] lg:flex lg:w-auto">
             <RetroButton
               variant="ok"
               size="sm"
               onClick={shareJobhunt}
               aria-label="Invite friends"
               title="Invite friends"
-              className="h-8 w-36 gap-1.5"
+              className="h-8 w-full min-w-0 gap-1.5 lg:w-36"
             >
               <img
                 src={inviteFriendsIcon.url}
@@ -120,7 +120,7 @@ export function Shell({ children }: { children: ReactNode }) {
               onClick={() => navigate({ to: "/add" })}
               aria-label="Add job"
               title="Add job"
-              className="h-8 w-36 gap-1.5"
+              className="h-8 w-full min-w-0 gap-1.5 lg:w-36"
             >
               <Plus className="h-3.5 w-3.5" />
               <span>ADD JOB</span>
