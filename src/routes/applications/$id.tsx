@@ -304,6 +304,18 @@ function ApplicationDetail() {
                 }}
               />
               <RetroButton
+                variant="primary"
+                size="sm"
+                onClick={async () => {
+                  if (!user) return;
+                  const { createLetterThread } = await import("@/lib/jobhunt/letters");
+                  const threadId = await createLetterThread(user.id, { application_id: app.id, title: `${app.job_title} — ${app.company}` });
+                  navigate({ to: "/letters/$threadId", params: { threadId } });
+                }}
+              >
+                WRITE COVER LETTER
+              </RetroButton>
+              <RetroButton
                 variant="bad"
                 size="sm"
                 onClick={async () => {
