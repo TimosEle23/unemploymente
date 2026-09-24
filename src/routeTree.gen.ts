@@ -17,8 +17,11 @@ import { Route as InboxImportRouteImport } from './routes/inbox-import'
 import { Route as InterviewsRouteImport } from './routes/interviews'
 import { Route as SettingsRouteImport } from './routes/settings'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
+import { Route as ApiLetterChatRouteImport } from './routes/api/letter-chat'
 import { Route as ApplicationsIndexRouteImport } from './routes/applications/index'
 import { Route as ApplicationsIdRouteImport } from './routes/applications/$id'
+import { Route as LettersIndexRouteImport } from './routes/letters/index'
+import { Route as LettersThreadIdRouteImport } from './routes/letters/$threadId'
 import { Route as OauthGoogle_mailReturnRouteImport } from './routes/oauth/google_mail/return'
 import { Route as OauthMicrosoft_outlookReturnRouteImport } from './routes/oauth/microsoft_outlook/return'
 
@@ -62,6 +65,11 @@ const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
   path: '/sitemap.xml',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiLetterChatRoute = ApiLetterChatRouteImport.update({
+  id: '/api/letter-chat',
+  path: '/api/letter-chat',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApplicationsIndexRoute = ApplicationsIndexRouteImport.update({
   id: '/applications/',
   path: '/applications/',
@@ -70,6 +78,16 @@ const ApplicationsIndexRoute = ApplicationsIndexRouteImport.update({
 const ApplicationsIdRoute = ApplicationsIdRouteImport.update({
   id: '/applications/$id',
   path: '/applications/$id',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LettersIndexRoute = LettersIndexRouteImport.update({
+  id: '/letters/',
+  path: '/letters/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LettersThreadIdRoute = LettersThreadIdRouteImport.update({
+  id: '/letters/$threadId',
+  path: '/letters/$threadId',
   getParentRoute: () => rootRouteImport,
 } as any)
 const OauthGoogle_mailReturnRoute = OauthGoogle_mailReturnRouteImport.update({
@@ -93,8 +111,11 @@ export interface FileRoutesByFullPath {
   '/interviews': typeof InterviewsRoute
   '/settings': typeof SettingsRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/api/letter-chat': typeof ApiLetterChatRoute
   '/applications/$id': typeof ApplicationsIdRoute
+  '/letters/$threadId': typeof LettersThreadIdRoute
   '/applications/': typeof ApplicationsIndexRoute
+  '/letters/': typeof LettersIndexRoute
   '/oauth/google_mail/return': typeof OauthGoogle_mailReturnRoute
   '/oauth/microsoft_outlook/return': typeof OauthMicrosoft_outlookReturnRoute
 }
@@ -107,8 +128,11 @@ export interface FileRoutesByTo {
   '/interviews': typeof InterviewsRoute
   '/settings': typeof SettingsRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/api/letter-chat': typeof ApiLetterChatRoute
   '/applications/$id': typeof ApplicationsIdRoute
+  '/letters/$threadId': typeof LettersThreadIdRoute
   '/applications': typeof ApplicationsIndexRoute
+  '/letters': typeof LettersIndexRoute
   '/oauth/google_mail/return': typeof OauthGoogle_mailReturnRoute
   '/oauth/microsoft_outlook/return': typeof OauthMicrosoft_outlookReturnRoute
 }
@@ -122,8 +146,11 @@ export interface FileRoutesById {
   '/interviews': typeof InterviewsRoute
   '/settings': typeof SettingsRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/api/letter-chat': typeof ApiLetterChatRoute
   '/applications/$id': typeof ApplicationsIdRoute
+  '/letters/$threadId': typeof LettersThreadIdRoute
   '/applications/': typeof ApplicationsIndexRoute
+  '/letters/': typeof LettersIndexRoute
   '/oauth/google_mail/return': typeof OauthGoogle_mailReturnRoute
   '/oauth/microsoft_outlook/return': typeof OauthMicrosoft_outlookReturnRoute
 }
@@ -138,8 +165,11 @@ export interface FileRouteTypes {
     | '/interviews'
     | '/settings'
     | '/sitemap.xml'
+    | '/api/letter-chat'
     | '/applications/$id'
+    | '/letters/$threadId'
     | '/applications/'
+    | '/letters/'
     | '/oauth/google_mail/return'
     | '/oauth/microsoft_outlook/return'
   fileRoutesByTo: FileRoutesByTo
@@ -152,8 +182,11 @@ export interface FileRouteTypes {
     | '/interviews'
     | '/settings'
     | '/sitemap.xml'
+    | '/api/letter-chat'
     | '/applications/$id'
+    | '/letters/$threadId'
     | '/applications'
+    | '/letters'
     | '/oauth/google_mail/return'
     | '/oauth/microsoft_outlook/return'
   id:
@@ -166,8 +199,11 @@ export interface FileRouteTypes {
     | '/interviews'
     | '/settings'
     | '/sitemap.xml'
+    | '/api/letter-chat'
     | '/applications/$id'
+    | '/letters/$threadId'
     | '/applications/'
+    | '/letters/'
     | '/oauth/google_mail/return'
     | '/oauth/microsoft_outlook/return'
   fileRoutesById: FileRoutesById
@@ -181,8 +217,11 @@ export interface RootRouteChildren {
   InterviewsRoute: typeof InterviewsRoute
   SettingsRoute: typeof SettingsRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
+  ApiLetterChatRoute: typeof ApiLetterChatRoute
   ApplicationsIdRoute: typeof ApplicationsIdRoute
+  LettersThreadIdRoute: typeof LettersThreadIdRoute
   ApplicationsIndexRoute: typeof ApplicationsIndexRoute
+  LettersIndexRoute: typeof LettersIndexRoute
   OauthGoogle_mailReturnRoute: typeof OauthGoogle_mailReturnRoute
   OauthMicrosoft_outlookReturnRoute: typeof OauthMicrosoft_outlookReturnRoute
 }
@@ -245,6 +284,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof SitemapDotxmlRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/letter-chat': {
+      id: '/api/letter-chat'
+      path: '/api/letter-chat'
+      fullPath: '/api/letter-chat'
+      preLoaderRoute: typeof ApiLetterChatRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/applications/': {
       id: '/applications/'
       path: '/applications'
@@ -257,6 +303,20 @@ declare module '@tanstack/react-router' {
       path: '/applications/$id'
       fullPath: '/applications/$id'
       preLoaderRoute: typeof ApplicationsIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/letters/': {
+      id: '/letters/'
+      path: '/letters'
+      fullPath: '/letters/'
+      preLoaderRoute: typeof LettersIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/letters/$threadId': {
+      id: '/letters/$threadId'
+      path: '/letters/$threadId'
+      fullPath: '/letters/$threadId'
+      preLoaderRoute: typeof LettersThreadIdRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/oauth/google_mail/return': {
@@ -285,8 +345,11 @@ const rootRouteChildren: RootRouteChildren = {
   InterviewsRoute: InterviewsRoute,
   SettingsRoute: SettingsRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
+  ApiLetterChatRoute: ApiLetterChatRoute,
   ApplicationsIdRoute: ApplicationsIdRoute,
+  LettersThreadIdRoute: LettersThreadIdRoute,
   ApplicationsIndexRoute: ApplicationsIndexRoute,
+  LettersIndexRoute: LettersIndexRoute,
   OauthGoogle_mailReturnRoute: OauthGoogle_mailReturnRoute,
   OauthMicrosoft_outlookReturnRoute: OauthMicrosoft_outlookReturnRoute,
 }
