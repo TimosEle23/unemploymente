@@ -3,6 +3,8 @@ import { z } from "zod";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 
 const USER_TABLES = [
+  "letter_messages",
+  "letter_threads",
   "application_events",
   "notes",
   "skills",
