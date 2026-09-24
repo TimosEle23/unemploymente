@@ -12,9 +12,6 @@ const DESCRIPTION =
 
 export const Route = createFileRoute("/letters/")({
   staticData: { sitemap: false },
-  validateSearch: (search: Record<string, unknown>) => ({
-    application: typeof search["application"] === "string" ? (search["application"] as string) : undefined,
-  }),
   head: () => ({
     meta: [
       { title: "Cover letters — Unemploymente" },

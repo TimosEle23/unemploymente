@@ -20,6 +20,8 @@ import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as ApiLetterChatRouteImport } from './routes/api/letter-chat'
 import { Route as ApplicationsIndexRouteImport } from './routes/applications/index'
 import { Route as ApplicationsIdRouteImport } from './routes/applications/$id'
+import { Route as LettersIndexRouteImport } from './routes/letters/index'
+import { Route as LettersThreadIdRouteImport } from './routes/letters/$threadId'
 import { Route as OauthGoogle_mailReturnRouteImport } from './routes/oauth/google_mail/return'
 import { Route as OauthMicrosoft_outlookReturnRouteImport } from './routes/oauth/microsoft_outlook/return'
 
@@ -78,6 +80,16 @@ const ApplicationsIdRoute = ApplicationsIdRouteImport.update({
   path: '/applications/$id',
   getParentRoute: () => rootRouteImport,
 } as any)
+const LettersIndexRoute = LettersIndexRouteImport.update({
+  id: '/letters/',
+  path: '/letters/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LettersThreadIdRoute = LettersThreadIdRouteImport.update({
+  id: '/letters/$threadId',
+  path: '/letters/$threadId',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const OauthGoogle_mailReturnRoute = OauthGoogle_mailReturnRouteImport.update({
   id: '/oauth/google_mail/return',
   path: '/oauth/google_mail/return',
@@ -101,7 +113,9 @@ export interface FileRoutesByFullPath {
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/api/letter-chat': typeof ApiLetterChatRoute
   '/applications/$id': typeof ApplicationsIdRoute
+  '/letters/$threadId': typeof LettersThreadIdRoute
   '/applications/': typeof ApplicationsIndexRoute
+  '/letters/': typeof LettersIndexRoute
   '/oauth/google_mail/return': typeof OauthGoogle_mailReturnRoute
   '/oauth/microsoft_outlook/return': typeof OauthMicrosoft_outlookReturnRoute
 }
@@ -116,7 +130,9 @@ export interface FileRoutesByTo {
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/api/letter-chat': typeof ApiLetterChatRoute
   '/applications/$id': typeof ApplicationsIdRoute
+  '/letters/$threadId': typeof LettersThreadIdRoute
   '/applications': typeof ApplicationsIndexRoute
+  '/letters': typeof LettersIndexRoute
   '/oauth/google_mail/return': typeof OauthGoogle_mailReturnRoute
   '/oauth/microsoft_outlook/return': typeof OauthMicrosoft_outlookReturnRoute
 }
@@ -132,7 +148,9 @@ export interface FileRoutesById {
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/api/letter-chat': typeof ApiLetterChatRoute
   '/applications/$id': typeof ApplicationsIdRoute
+  '/letters/$threadId': typeof LettersThreadIdRoute
   '/applications/': typeof ApplicationsIndexRoute
+  '/letters/': typeof LettersIndexRoute
   '/oauth/google_mail/return': typeof OauthGoogle_mailReturnRoute
   '/oauth/microsoft_outlook/return': typeof OauthMicrosoft_outlookReturnRoute
 }
@@ -149,7 +167,9 @@ export interface FileRouteTypes {
     | '/sitemap.xml'
     | '/api/letter-chat'
     | '/applications/$id'
+    | '/letters/$threadId'
     | '/applications/'
+    | '/letters/'
     | '/oauth/google_mail/return'
     | '/oauth/microsoft_outlook/return'
   fileRoutesByTo: FileRoutesByTo
@@ -164,7 +184,9 @@ export interface FileRouteTypes {
     | '/sitemap.xml'
     | '/api/letter-chat'
     | '/applications/$id'
+    | '/letters/$threadId'
     | '/applications'
+    | '/letters'
     | '/oauth/google_mail/return'
     | '/oauth/microsoft_outlook/return'
   id:
@@ -179,7 +201,9 @@ export interface FileRouteTypes {
     | '/sitemap.xml'
     | '/api/letter-chat'
     | '/applications/$id'
+    | '/letters/$threadId'
     | '/applications/'
+    | '/letters/'
     | '/oauth/google_mail/return'
     | '/oauth/microsoft_outlook/return'
   fileRoutesById: FileRoutesById
@@ -195,7 +219,9 @@ export interface RootRouteChildren {
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   ApiLetterChatRoute: typeof ApiLetterChatRoute
   ApplicationsIdRoute: typeof ApplicationsIdRoute
+  LettersThreadIdRoute: typeof LettersThreadIdRoute
   ApplicationsIndexRoute: typeof ApplicationsIndexRoute
+  LettersIndexRoute: typeof LettersIndexRoute
   OauthGoogle_mailReturnRoute: typeof OauthGoogle_mailReturnRoute
   OauthMicrosoft_outlookReturnRoute: typeof OauthMicrosoft_outlookReturnRoute
 }
@@ -279,6 +305,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApplicationsIdRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/letters/': {
+      id: '/letters/'
+      path: '/letters'
+      fullPath: '/letters/'
+      preLoaderRoute: typeof LettersIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/letters/$threadId': {
+      id: '/letters/$threadId'
+      path: '/letters/$threadId'
+      fullPath: '/letters/$threadId'
+      preLoaderRoute: typeof LettersThreadIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/oauth/google_mail/return': {
       id: '/oauth/google_mail/return'
       path: '/oauth/google_mail/return'
@@ -307,7 +347,9 @@ const rootRouteChildren: RootRouteChildren = {
   SitemapDotxmlRoute: SitemapDotxmlRoute,
   ApiLetterChatRoute: ApiLetterChatRoute,
   ApplicationsIdRoute: ApplicationsIdRoute,
+  LettersThreadIdRoute: LettersThreadIdRoute,
   ApplicationsIndexRoute: ApplicationsIndexRoute,
+  LettersIndexRoute: LettersIndexRoute,
   OauthGoogle_mailReturnRoute: OauthGoogle_mailReturnRoute,
   OauthMicrosoft_outlookReturnRoute: OauthMicrosoft_outlookReturnRoute,
 }
