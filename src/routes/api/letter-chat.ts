@@ -60,6 +60,7 @@ const lines = (label: string, value: unknown) =>
   Array.isArray(value) && value.length ? `${label}:\n- ${value.join("\n- ")}` : "";
 
 export const Route = createFileRoute("/api/letter-chat")({
+  staticData: { sitemap: false },
   server: {
     handlers: {
       POST: async ({ request }) => {
@@ -99,14 +100,14 @@ export const Route = createFileRoute("/api/letter-chat")({
           if (app) {
             const a = app as Record<string, unknown>;
             jobBlock = [
-              `Job title: ${a.job_title}`,
-              `Company: ${a.company}`,
-              a.location ? `Location: ${a.location}` : "",
-              a.description ? `Description:\n${a.description}` : "",
-              lines("Responsibilities", a.responsibilities),
-              lines("Requirements", a.requirements),
-              lines("Required skills", a.required_skills),
-              lines("Preferred skills", a.preferred_skills),
+              `Job title: ${a["job_title"]}`,
+              `Company: ${a["company"]}`,
+              a["location"] ? `Location: ${a["location"]}` : "",
+              a["description"] ? `Description:\n${a["description"]}` : "",
+              lines("Responsibilities", a["responsibilities"]),
+              lines("Requirements", a["requirements"]),
+              lines("Required skills", a["required_skills"]),
+              lines("Preferred skills", a["preferred_skills"]),
             ]
               .filter(Boolean)
               .join("\n");
@@ -116,15 +117,15 @@ export const Route = createFileRoute("/api/letter-chat")({
 
         const p = (profile ?? {}) as Record<string, unknown>;
         const hasCv =
-          [p.cv_experience, p.cv_education, p.cv_projects].some((v) => Array.isArray(v) && v.length > 0);
+          [p["cv_experience"], p["cv_education"], p["cv_projects"]].some((v) => Array.isArray(v) && v.length > 0);
         const candidate = [
-          p.full_name ? `Name: ${p.full_name}` : "",
-          p.headline ? `Headline: ${p.headline}` : "",
-          lines("Education (profile)", p.education),
-          lines("Skills", p.skills),
-          entries("Work experience", p.cv_experience),
-          entries("Education (CV)", p.cv_education),
-          entries("Projects", p.cv_projects),
+          p["full_name"] ? `Name: ${p["full_name"]}` : "",
+          p["headline"] ? `Headline: ${p["headline"]}` : "",
+          lines("Education (profile)", p["education"]),
+          lines("Skills", p["skills"]),
+          entries("Work experience", p["cv_experience"]),
+          entries("Education (CV)", p["cv_education"]),
+          entries("Projects", p["cv_projects"]),
         ]
           .filter(Boolean)
           .join("\n\n");
