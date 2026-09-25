@@ -228,16 +228,18 @@ function SettingsPage() {
               <input
                 className={inputClass}
                 value={headline}
+                placeholder="e.g. Data Scientist | MSc Statistics"
                 onChange={(event) => setHeadline(event.target.value)}
               />
             </Field>
             <Field label="FULL NAME">
-              <input className={inputClass} value={fullName} maxLength={120} onChange={(event) => setFullName(event.target.value)} />
+              <input className={inputClass} value={fullName} placeholder="Your full name" maxLength={120} onChange={(event) => setFullName(event.target.value)} />
             </Field>
             <Field label="EDUCATION (ONE PER LINE)">
               <textarea
                 className={`${inputClass} min-h-20 font-sans`}
                 value={education}
+                placeholder="One degree per line"
                 onChange={(event) => setEducation(event.target.value)}
               />
             </Field>
@@ -245,6 +247,7 @@ function SettingsPage() {
               <textarea
                 className={`${inputClass} min-h-24 font-sans`}
                 value={skills}
+                placeholder="e.g. Python, SQL, Machine Learning"
                 onChange={(event) => setSkills(event.target.value)}
               />
             </Field>
