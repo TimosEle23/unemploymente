@@ -210,6 +210,18 @@ function SettingsPage() {
       <div className="space-y-4">
         <h1 className="pixel-text text-[14px] text-foreground">MY PROFILE</h1>
 
+        {profile && (!profile.full_name?.trim() || !profile.headline?.trim() || !profile.education.length || !profile.skills.length) ? (
+          <div className="border-2 border-ok bg-card p-4">
+            <p className="pixel-text text-[10px] leading-relaxed text-ok">COMPLETE YOUR PROFILE TO CONTINUE</p>
+            <p className="mt-2 break-words font-sans text-[13px] leading-relaxed text-foreground">
+              Fill in your full name, headline, education and skills below, then press SAVE PROFILE to unlock the rest of the app.
+            </p>
+            <p className="mt-2 break-words font-sans text-[13px] leading-relaxed text-muted-foreground">
+              Tip: upload your CV under LATEST CV and press READ SECTIONS FROM CV. Your work experience, education and projects will appear here, each ready to copy into every job application.
+            </p>
+          </div>
+        ) : null}
+
         <Panel title="PROFESSIONAL PROFILE">
           <div className="space-y-3">
             <Field label="HEADLINE">

@@ -7,7 +7,7 @@ import { useAuth } from "@/lib/auth";
 import inviteFriendsIcon from "@/assets/invite-friends.png.asset.json";
 import { RetroButton } from "./ui";
 import { cn } from "@/lib/utils";
-import { useApplications } from "@/lib/jobhunt/hooks";
+import { useApplications, useProfile } from "@/lib/jobhunt/hooks";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import unemploymenteLogo from "@/assets/unemploymente-logo.png";
 
@@ -27,8 +27,15 @@ export function Shell({ children }: { children: ReactNode }) {
   const navigate = useNavigate();
   const { user, loading } = useAuth();
   const { data: applications = [] } = useApplications();
+  const { data: profile } = useProfile();
   const path = useRouterState({ select: (state) => state.location.pathname });
   const [notificationsReadAt, setNotificationsReadAt] = useState<string | null>(null);
+  const profileIncomplete =
+    !!profile && (!profile.full_name?.trim() || !profile.headline?.trim() || !profile.education.length || !profile.skills.length);
+
+  useEffect(() => {
+    if (profileIncomplete && path !== "/settings") navigate({ to: "/settings" });
+  }, [profileIncomplete, path, navigate]);
 
   useEffect(() => {
     if (!user) return;
