@@ -15,7 +15,7 @@ const NAV = [
   { label: "DASHBOARD", to: "/" },
   { label: "APPLICATIONS", to: "/applications" },
   { label: "ADD JOB", to: "/add" },
-  { label: "INBOX IMPORT", to: "/inbox-import" },
+  { label: "MAIL SCRATCH\n", to: "/inbox-import" },
   { label: "LETTERS", to: "/letters" },
   { label: "INTERVIEWS", to: "/interviews" },
   { label: "ANALYTICS", to: "/analytics" },
