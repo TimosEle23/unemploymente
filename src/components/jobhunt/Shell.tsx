@@ -93,7 +93,7 @@ export function Shell({ children }: { children: ReactNode }) {
 
   return (
     <div className="min-h-screen bg-background">
-      <header className="border-b-2 border-border bg-panel">
+      <header className="sticky top-0 z-50 border-b-2 border-border bg-panel">
         <div className="mx-auto grid max-w-7xl grid-cols-1 items-center gap-3 px-4 py-3 lg:flex lg:flex-wrap lg:justify-between">
           <Link to="/" className="flex min-w-0 items-center gap-3">
             <img src={unemploymenteLogo} alt="Unemploymente" className="h-12 w-10 shrink-0 object-contain" />
